@@ -1,0 +1,420 @@
+/* 單堂頁的樣式，各門課共用。 */
+  .lesson {
+    padding-bottom: clamp(3rem, 8vw, 6rem);
+  }
+  .crumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.6rem;
+    padding-top: 1rem;
+    font-size: 0.9375rem;
+    color: var(--muted);
+  }
+  .crumbs a {
+    color: var(--muted);
+  }
+  .lesson-head {
+    display: flex;
+    align-items: flex-start;
+    gap: clamp(1rem, 3vw, 2rem);
+    padding-block: clamp(1.5rem, 4vw, 3rem);
+  }
+  .lesson-head .no {
+    flex: none;
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(3.5rem, 10vw, 6rem);
+    line-height: 0.9;
+    color: var(--violet);
+  }
+  .lesson-head h1 {
+    font-size: clamp(1.9rem, 5vw, 3.5rem);
+  }
+  .why {
+    margin-top: 0.6rem;
+    font-size: clamp(1.05rem, 2vw, 1.3rem);
+    color: var(--muted);
+  }
+
+  .deck-wrap {
+    width: min(100% - 2 * var(--gutter), 80rem);
+    margin-inline: auto;
+  }
+  .deck {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 14px;
+    background: var(--ink);
+    box-shadow: var(--shadow);
+    cursor: pointer;
+  }
+  .deck:fullscreen {
+    border-radius: 0;
+    aspect-ratio: auto;
+  }
+  .deck-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.9rem;
+  }
+  .deck-bar .btn {
+    min-height: 2.75rem;
+    padding-inline: 0.85rem;
+    background: var(--surface);
+  }
+  .deck-bar .btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+  .count {
+    min-width: 4.5em;
+    text-align: center;
+    color: var(--muted);
+  }
+  .count b {
+    color: var(--ink);
+  }
+  .hint {
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+  .deck-bar .full {
+    margin-left: auto;
+  }
+  .video-note {
+    margin-top: 0.75rem;
+    color: var(--muted);
+    font-size: 0.9375rem;
+  }
+
+  .below {
+    max-width: 56rem;
+  }
+  .below > section {
+    margin-top: clamp(3rem, 7vw, 5rem);
+  }
+  .below h2 {
+    font-size: clamp(1.4rem, 3vw, 2rem);
+  }
+  .practice-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .practice-card {
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border-radius: 18px;
+    background: var(--role-soft);
+  }
+  .practice-card h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.25rem;
+  }
+  .tag {
+    display: inline-grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background: var(--role);
+    color: #fff;
+    font-size: 1rem;
+  }
+  .practice-card ol {
+    margin-top: 1rem;
+    counter-reset: p;
+  }
+  .practice-card li {
+    counter-increment: p;
+    display: grid;
+    grid-template-columns: 1.75rem 1fr;
+    padding: 0.5rem 0;
+    font-size: 1.0625rem;
+  }
+  .practice-card li::before {
+    content: counter(p);
+    font-weight: 700;
+    color: var(--role);
+  }
+  .question p {
+    margin-top: 0.75rem;
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(1.25rem, 2.8vw, 1.75rem);
+    line-height: 1.5;
+    max-width: 26em;
+  }
+
+  .done {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.1rem 1.25rem;
+    border: 2px solid var(--rule);
+    border-radius: 14px;
+    background: var(--surface);
+    cursor: pointer;
+    transition:
+      border-color 0.2s var(--ease-out),
+      background-color 0.2s var(--ease-out);
+  }
+  .done:hover {
+    border-color: var(--ink);
+  }
+  .done input {
+    position: absolute;
+    opacity: 0;
+  }
+  .done .box {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 2px solid var(--muted);
+    border-radius: 8px;
+    color: transparent;
+    transition:
+      background-color 0.2s var(--ease-out),
+      border-color 0.2s var(--ease-out);
+  }
+  .done input:checked + .box {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: #fff;
+  }
+  .done input:focus-visible + .box {
+    outline: 2px solid var(--violet);
+    outline-offset: 3px;
+  }
+  .done:has(input:checked) {
+    border-color: var(--teal);
+    background: var(--teal-soft);
+  }
+  .done strong {
+    display: block;
+    line-height: 1.4;
+  }
+  .done small {
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+  .pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .pager a {
+    padding: 1rem 0;
+    border-top: 2px solid var(--ink);
+    color: var(--ink);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .pager a:hover {
+    color: var(--violet);
+    border-top-color: var(--violet);
+  }
+  .pager .next {
+    text-align: right;
+  }
+  .pager small {
+    display: block;
+    font-weight: 400;
+    color: var(--muted);
+  }
+  .hint-small {
+    display: none;
+    color: var(--muted);
+    font-size: 0.8125rem;
+    line-height: 1.4;
+  }
+  @media (max-width: 620px) {
+    .hint {
+      display: none;
+    }
+    .hint-small {
+      display: block;
+    }
+    .deck-bar .full {
+      background: var(--violet);
+      border-color: var(--violet);
+      color: #fff;
+    }
+  }
+
+  /* ───── 手繪紙張風的調整 ───── */
+  .crumbs,
+  .crumbs a,
+  .why,
+  .video-note,
+  .count,
+  .hint,
+  .hint-small {
+    color: var(--muted);
+  }
+  .lesson-head .no {
+    color: var(--blue);
+  }
+  /* 簡報像一張貼在桌上的照片 */
+  .lesson {
+    overflow-x: clip;
+  }
+  .deck-wrap {
+    position: relative;
+  }
+  .deck {
+    border-radius: 2px;
+    border: 10px solid var(--surface);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+  .deck:fullscreen {
+    background: var(--desk);
+  }
+  .deck:fullscreen {
+    border: 0;
+  }
+  .deck-wrap::before,
+  .deck-wrap::after {
+    content: "";
+    position: absolute;
+    top: -12px;
+    width: 6.5rem;
+    height: 26px;
+    background: rgb(246 244 236 / 0.62);
+    border-inline: 1px dashed rgb(140 135 120 / 0.45);
+    z-index: 1;
+  }
+  .deck-wrap::before {
+    left: -1.5rem;
+    rotate: -32deg;
+  }
+  .deck-wrap::after {
+    right: -1.5rem;
+    rotate: 30deg;
+  }
+  .below > section {
+    position: relative;
+    margin-top: clamp(2rem, 5vw, 3rem);
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    background: var(--grain), var(--surface);
+    border-radius: 2px;
+    box-shadow: var(--shadow);
+  }
+  .below > section:nth-child(odd) {
+    rotate: -0.3deg;
+  }
+  .below > section:nth-child(even) {
+    rotate: 0.35deg;
+  }
+  .below .corner {
+    right: -18px;
+    top: -34px;
+  }
+  .practice-head {
+    padding-right: 4.5rem;
+  }
+  .practice-card {
+    border-radius: 2px;
+  }
+  /* 打勾之後，貼上一張 DONE 貼紙 */
+  .done {
+    position: relative;
+  }
+  .done .done-sticker {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    translate: 0 -50%;
+    scale: 0.4;
+    opacity: 0;
+    transition:
+      scale 0.3s var(--ease-settle),
+      opacity 0.15s ease-out;
+  }
+  .done:has(input:checked) .done-sticker {
+    scale: 1;
+    opacity: 1;
+  }
+  @media (max-width: 620px) {
+    .below .corner {
+      right: -6px;
+      width: 64px;
+      height: auto;
+    }
+  }
+  .question p {
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+  }
+  .done {
+    border: 2px solid var(--ink);
+    border-radius: var(--wob-b);
+  }
+  .done:hover {
+    background: var(--paper);
+  }
+  .done .box {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--wob-a);
+    border-color: var(--ink);
+  }
+  .done input:checked + .box {
+    background: var(--surface);
+    border-color: var(--ink);
+    color: var(--green);
+  }
+  .done:has(input:checked) {
+    border-color: var(--green);
+    background: #dfe9d8;
+  }
+  .pager a:hover {
+    color: var(--blue);
+    border-top-color: var(--marker);
+  }
+  @media (max-width: 620px) {
+    .deck-bar .full {
+      background: var(--marker);
+      border-color: var(--ink);
+      color: var(--ink);
+    }
+    .deck {
+      border-width: 5px;
+    }
+  }
+
+/* 只有一個練習、不分 A/B 卡的課 */
+.practice .task {
+  font-size: clamp(1.2rem, 2.4vw, 1.5rem);
+  line-height: 1.6;
+  max-width: 28em;
+}
+
+/* 上課影片 */
+.lesson-video {
+  width: min(100% - 2 * var(--gutter), 80rem);
+  margin: 0 auto clamp(2rem, 5vw, 3.5rem);
+}
+.lesson-video video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--desk);
+  border: 10px solid var(--surface);
+  border-radius: 2px;
+  box-shadow: var(--shadow);
+}
+@media (max-width: 620px) {
+  .lesson-video video {
+    border-width: 5px;
+  }
+}

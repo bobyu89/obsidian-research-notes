@@ -1,0 +1,985 @@
+/* 學習白板的樣式，各門課的白板頁共用。 */
+  html:has(.app:not(.embed)),
+  html:has(.app:not(.embed)) body {
+    height: 100%;
+    overflow: hidden;
+  }
+  .app {
+    --panel: 21.5rem;
+    display: grid;
+    grid-template: auto minmax(0, 1fr) / minmax(0, 1fr) var(--panel);
+    height: 100dvh;
+  }
+
+  /* 頂列 */
+  .bar {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem 1.25rem;
+    padding: 0.6rem var(--gutter);
+    background: var(--surface);
+    border-bottom: 1px solid var(--rule);
+    z-index: 3;
+  }
+  .bar .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.9375rem;
+  }
+  .bar .back:hover {
+    color: var(--ink);
+  }
+  .bar h1,
+  .bar h2 {
+    font-family: var(--hand);
+    font-weight: 400;
+    line-height: 1.3;
+    font-size: 1.25rem;
+    letter-spacing: 0;
+  }
+  .bar .progress {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-right: auto;
+    font-size: 0.9375rem;
+    color: var(--muted);
+  }
+  .meter {
+    width: 6rem;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--rule);
+    overflow: hidden;
+  }
+  .meter i {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--teal);
+    transition: width 0.5s var(--ease-out);
+  }
+  .bar .role-switch,
+  .view-switch {
+    display: inline-flex;
+    padding: 3px;
+    border-radius: 10px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+  }
+  .bar .role-switch button,
+  .view-switch button {
+    min-height: 2.25rem;
+    padding: 0.15rem 0.9rem;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    font-weight: 700;
+    font-size: 0.9375rem;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .bar .role-switch button[aria-pressed="true"] {
+    background: var(--role);
+    color: #fff;
+  }
+  .view-switch button[aria-pressed="true"] {
+    background: var(--ink);
+    color: #fff;
+  }
+
+  /* 畫布 */
+  .canvas {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--paper);
+    background-image: radial-gradient(circle at 1px 1px, #c9c5da 1.3px, transparent 0);
+    touch-action: none;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .canvas.is-panning {
+    cursor: grabbing;
+  }
+  .canvas:focus-visible {
+    outline-offset: -3px;
+  }
+  .world {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform-origin: 0 0;
+    will-change: transform;
+  }
+  .region {
+    position: absolute;
+    border: 2px dashed var(--rule);
+    border-radius: 26px;
+    background: rgb(255 255 255 / 0.45);
+  }
+  .region span {
+    position: absolute;
+    left: 28px;
+    top: 16px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .edges {
+    position: absolute;
+    left: 0;
+    top: 0;
+    overflow: visible;
+    pointer-events: none;
+  }
+  .edges path,
+  .legend path {
+    fill: none;
+    stroke-linecap: round;
+  }
+  .edges .seq,
+  .legend .seq {
+    stroke: #a39fb8;
+    stroke-width: 2.5;
+  }
+  .edges .callback,
+  .legend .callback {
+    stroke: var(--violet);
+    stroke-width: 2.5;
+    stroke-dasharray: 3 8;
+  }
+  .edges path {
+    transition:
+      opacity 0.25s var(--ease-out),
+      stroke-width 0.25s var(--ease-out);
+  }
+  .edge-label {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    max-width: 15em;
+    padding: 0.2rem 0.7rem;
+    border-radius: 8px;
+    background: var(--violet-soft);
+    color: var(--violet-deep);
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.45;
+    text-align: center;
+    pointer-events: none;
+    transition: opacity 0.25s var(--ease-out);
+  }
+  .has-selection .edges path:not(.is-related),
+  .has-selection .edge-label:not(.is-related) {
+    opacity: 0.22;
+  }
+  .edges path.is-related {
+    stroke-width: 4;
+  }
+
+  /* 卡片 */
+  .card {
+    position: absolute;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-content: center;
+    gap: 0 0.9rem;
+    padding: 0 1.1rem;
+    border: 2px solid transparent;
+    border-radius: 16px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    text-align: left;
+    cursor: pointer;
+    touch-action: none;
+    transition:
+      box-shadow 0.2s var(--ease-out),
+      border-color 0.2s var(--ease-out),
+      background-color 0.3s var(--ease-out);
+  }
+  .card:hover {
+    border-color: var(--rule);
+    box-shadow:
+      0 2px 4px rgb(30 26 46 / 0.08),
+      0 14px 34px rgb(30 26 46 / 0.14);
+  }
+  .card.is-dragging {
+    cursor: grabbing;
+    z-index: 2;
+    box-shadow:
+      0 4px 8px rgb(30 26 46 / 0.1),
+      0 22px 48px rgb(30 26 46 / 0.2);
+  }
+  .card .no {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 2.75rem;
+    line-height: 1;
+    color: var(--violet);
+    min-width: 1.1em;
+  }
+  .card .title {
+    font-weight: 700;
+    line-height: 1.35;
+    font-size: 1.1875rem;
+  }
+  .card .badge {
+    position: absolute;
+    right: -9px;
+    top: -9px;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--teal);
+    color: #fff;
+    transform: scale(0);
+    transition: transform 0.35s var(--ease-out);
+  }
+  .card.is-done .badge {
+    transform: scale(1);
+  }
+  .card.is-done {
+    background: #fbfbfd;
+  }
+  .card.is-done .no {
+    color: var(--muted);
+  }
+  .card.is-next {
+    background: var(--violet);
+    color: #fff;
+  }
+  .card.is-next .no {
+    color: #fff;
+  }
+  .card.is-next::after {
+    content: "接著學這一堂";
+    position: absolute;
+    left: 14px;
+    top: -17px;
+    padding: 0.05rem 0.65rem;
+    border-radius: 7px;
+    background: var(--ink);
+    color: #fff;
+    font-size: 0.9375rem;
+    font-weight: 700;
+  }
+  .card.is-selected {
+    border-color: var(--ink);
+  }
+  .card.is-next.is-selected {
+    border-color: var(--ink);
+  }
+  .card.event {
+    grid-template-columns: 1fr;
+    background: transparent;
+    box-shadow: none;
+    border: 2px dashed var(--ink);
+  }
+  .card.event:hover {
+    background: var(--surface);
+  }
+  .card.event .sub {
+    color: var(--muted);
+    font-size: 0.9375rem;
+  }
+  .card.tool {
+    grid-template-columns: 1fr;
+    background: var(--paper);
+    box-shadow: none;
+    border: 2px solid var(--rule);
+  }
+  .card.tool .sub {
+    color: var(--muted);
+    font-size: 0.9375rem;
+  }
+  .card.tool:hover,
+  .card.tool.is-selected {
+    background: var(--surface);
+    border-color: var(--ink);
+  }
+  .card.event.is-selected {
+    border-style: solid;
+    background: var(--surface);
+  }
+
+  /* 工具列 */
+  .board-tools {
+    position: absolute;
+    left: 1rem;
+    bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 4px;
+    border-radius: 12px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    cursor: default;
+  }
+  .board-tools button {
+    display: grid;
+    place-items: center;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0 0.75rem;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .board-tools button:hover {
+    background: var(--paper);
+  }
+  .board-tools output {
+    min-width: 3.25em;
+    text-align: center;
+    font-size: 0.9375rem;
+    color: var(--muted);
+  }
+
+  /* 右側內容 */
+  .inspector {
+    position: relative;
+    overflow-y: auto;
+    padding: 1.5rem 1.5rem 2rem;
+    background: var(--surface);
+    border-left: 1px solid var(--rule);
+    scrollbar-width: thin;
+  }
+  .inspector .close {
+    display: none;
+  }
+  .inspector h2 {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7rem;
+    font-size: 1.5rem;
+    line-height: 1.35;
+  }
+  .inspector h2 .no {
+    color: var(--violet);
+    font-size: 2.25rem;
+    line-height: 1;
+  }
+  .inspector h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+  }
+  .inspector .where {
+    margin-top: 0.35rem;
+    color: var(--muted);
+    font-size: 0.9375rem;
+  }
+  .inspector .why {
+    margin-top: 0.6rem;
+    color: var(--muted);
+  }
+  .inspector [data-panel="intro"] p {
+    margin: 1rem 0 1.5rem;
+    color: var(--muted);
+  }
+  .legend {
+    margin-top: 1.25rem;
+    display: grid;
+    gap: 0.4rem;
+  }
+  .legend li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .inspector .practice {
+    margin-top: 1.5rem;
+    padding: 1rem 1.1rem;
+    border-radius: 14px;
+    background: var(--role-soft);
+  }
+  .inspector .tag {
+    display: inline-grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
+    background: var(--role);
+    color: #fff;
+    font-size: 0.875rem;
+  }
+  .inspector .practice ol {
+    margin-top: 0.6rem;
+    padding-left: 1.3em;
+    list-style: decimal;
+    font-size: 0.9875rem;
+  }
+  .inspector .practice li {
+    padding: 0.15rem 0;
+  }
+  .inspector .links {
+    margin-top: 1.5rem;
+  }
+  .inspector .links li {
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .inspector .links button {
+    display: block;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--violet);
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+  }
+  .inspector .links button:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.22em;
+  }
+  .inspector .links span {
+    color: var(--muted);
+    font-size: 0.9375rem;
+  }
+  .panel-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.25rem;
+    margin-top: 1.75rem;
+  }
+  .app .done {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 2.75rem;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .app .done input {
+    position: absolute;
+    opacity: 0;
+  }
+  .app .done .box {
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 2px solid var(--muted);
+    border-radius: 7px;
+    color: transparent;
+    transition:
+      background-color 0.2s var(--ease-out),
+      border-color 0.2s var(--ease-out);
+  }
+  .app .done input:checked + .box {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: #fff;
+  }
+  .app .done input:focus-visible + .box {
+    outline: 2px solid var(--violet);
+    outline-offset: 3px;
+  }
+  .inspector .flow {
+    margin: 1.25rem 0;
+    border-top: 1px solid var(--rule);
+    font-size: 0.9375rem;
+  }
+  .inspector .flow li {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .inspector .flow li span:last-child {
+    flex: none;
+    color: var(--muted);
+  }
+  .inspector .pending {
+    margin-top: 1rem;
+    color: var(--muted);
+  }
+
+  /* 清單檢視 */
+  .list {
+    display: none;
+    grid-column: 1 / -1;
+    overflow-y: auto;
+    background: var(--surface);
+  }
+  .app[data-view="list"] .list {
+    display: block;
+  }
+  .app[data-view="list"] .canvas,
+  .app[data-view="list"] .inspector {
+    display: none;
+  }
+  .list-inner {
+    width: min(100% - 2 * var(--gutter), 52rem);
+    margin: 0 auto;
+    padding-block: 1rem 4rem;
+  }
+  .list section {
+    margin-top: 2rem;
+  }
+  .list h2 {
+    font-family: var(--sans);
+    font-size: 1.125rem;
+    font-weight: 700;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--ink);
+  }
+  .list li {
+    display: grid;
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+    align-items: center;
+    border-bottom: 1px solid var(--rule);
+  }
+  .list li a {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    gap: 0 0.75rem;
+    align-items: baseline;
+    padding: 0.8rem 0;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .list li a:hover .title {
+    color: var(--violet);
+  }
+  .list .no {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 1.4rem;
+    color: var(--violet);
+  }
+  .list .title {
+    font-weight: 700;
+  }
+  .list .why {
+    grid-column: 2;
+    color: var(--muted);
+    font-size: 0.9375rem;
+  }
+  .list li.is-done .no {
+    color: var(--muted);
+  }
+
+  @media (max-width: 900px) {
+    .app {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .bar {
+      flex-wrap: wrap;
+    }
+    .bar .back span,
+    .meter {
+      display: none;
+    }
+    .inspector {
+      position: fixed;
+      inset: auto 0 0 0;
+      max-height: 62dvh;
+      border-left: 0;
+      border-radius: 18px 18px 0 0;
+      box-shadow: 0 -8px 30px rgb(30 26 46 / 0.18);
+      transform: translateY(105%);
+      transition: transform 0.35s var(--ease-out);
+      z-index: 4;
+    }
+    .app.has-selection .inspector {
+      transform: none;
+    }
+    .inspector .close {
+      position: absolute;
+      right: 0.75rem;
+      top: 0.75rem;
+      display: grid;
+      place-items: center;
+      width: 2.75rem;
+      height: 2.75rem;
+      border: 0;
+      border-radius: 50%;
+      background: var(--paper);
+      cursor: pointer;
+    }
+    .inspector h2 {
+      padding-right: 3rem;
+    }
+    .board-tools [data-tool="reset"] {
+      display: none;
+    }
+  }
+
+  /* ───── 手繪紙張風的調整 ───── */
+  .bar {
+    background: var(--grain), var(--surface);
+    border-bottom: 0;
+    box-shadow: var(--shadow);
+  }
+  .bar h1,
+  .bar h2 {
+    font-size: 1.5rem;
+  }
+  .bar .back,
+  .bar .progress {
+    color: var(--muted);
+    font-size: 1rem;
+  }
+  .meter {
+    height: 11px;
+    border: 1.5px solid var(--ink);
+    border-radius: var(--wob-a);
+    background: var(--surface);
+  }
+  .meter i {
+    background: var(--green);
+  }
+  .bar .role-switch,
+  .view-switch {
+    gap: 3px;
+    background: var(--surface);
+    border: 2px solid var(--ink);
+    border-radius: var(--wob-b);
+  }
+  .bar .role-switch button,
+  .view-switch button {
+    border-radius: var(--wob-a);
+    font-size: 1rem;
+  }
+  .view-switch button[aria-pressed="true"] {
+    background: var(--ink);
+    color: var(--surface);
+  }
+  .canvas {
+    background: var(--linen), var(--desk);
+  }
+  .region {
+    border: 2px dashed rgb(107 102 96 / 0.75);
+    border-radius: 60px 38px 70px 34px / 38px 70px 34px 60px;
+    background: rgb(255 255 255 / 0.1);
+  }
+  .region span {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--muted);
+  }
+  .edges .seq,
+  .legend .seq {
+    stroke: var(--pencil);
+    stroke-width: 2.6;
+  }
+  .edges .callback,
+  .legend .callback {
+    stroke: var(--blue);
+    stroke-width: 3;
+    stroke-dasharray: 3 9;
+  }
+  .edge-label {
+    padding: 0.1rem 0.7rem;
+    border-radius: 2px;
+    background: var(--surface);
+    color: var(--blue-deep);
+    font-weight: 700;
+    font-size: 1.05rem;
+    box-shadow: 0 1px 1.5px rgb(var(--shade) / 0.28);
+    rotate: -1.4deg;
+  }
+  .card {
+    border: 0;
+    border-radius: 2px;
+    padding-top: 22px;
+    background:
+      linear-gradient(var(--rule-red), var(--rule-red)) 0 24px / 100% 2px no-repeat,
+      repeating-linear-gradient(transparent 0 30px, var(--rule) 30px 31.5px) 0 26px,
+      var(--card);
+    rotate: var(--tilt, 0deg);
+    transition:
+      box-shadow 0.2s ease-out,
+      rotate 0.2s var(--ease-settle);
+  }
+  .card:hover {
+    rotate: 0deg;
+    box-shadow: var(--shadow-lift);
+  }
+  .card.is-dragging {
+    rotate: -1.5deg;
+    box-shadow: var(--shadow-lift);
+  }
+  .card {
+    gap: 0 0.6rem;
+    padding-inline: 0.9rem 0.7rem;
+    letter-spacing: 0;
+  }
+  .card .no {
+    font-size: 2.7rem;
+    color: var(--blue);
+  }
+  .card .title {
+    font-weight: 700;
+    font-size: 1.2rem;
+    line-height: 1.3;
+  }
+  /* 已學完：貼一張 DONE 貼紙 */
+  .card .badge {
+    right: -16px;
+    top: auto;
+    bottom: -18px;
+    width: 62px;
+    height: auto;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    transform: rotate(-10deg) scale(0);
+    transition: transform 0.3s var(--ease-settle);
+  }
+  .card.is-done .badge {
+    transform: rotate(-10deg) scale(1);
+  }
+  .inspector .intro-owl {
+    float: right;
+    margin: -0.5rem -0.25rem 0.25rem 0.5rem;
+  }
+  .card.is-done {
+    background:
+      linear-gradient(var(--rule-red), var(--rule-red)) 0 24px / 100% 2px no-repeat,
+      repeating-linear-gradient(transparent 0 30px, var(--rule) 30px 31.5px) 0 26px,
+      var(--card);
+  }
+  .card.is-done .no {
+    color: var(--pencil);
+  }
+  /* 接著學：橘色麥克筆圈起來，貼一張標籤 */
+  .card.is-next {
+    color: var(--ink);
+    background:
+      linear-gradient(var(--rule-red), var(--rule-red)) 0 24px / 100% 2px no-repeat,
+      repeating-linear-gradient(transparent 0 30px, var(--rule) 30px 31.5px) 0 26px,
+      var(--card);
+    outline: 4px solid var(--marker);
+    outline-offset: 5px;
+    border-radius: var(--wob-a);
+  }
+  .card.is-next .no {
+    color: var(--blue);
+  }
+  .card.is-next::after {
+    left: 12px;
+    top: -24px;
+    padding: 0.05rem 0.7rem;
+    border-radius: 2px;
+    background: var(--marker);
+    color: var(--ink);
+    font-size: 1.05rem;
+    rotate: -3deg;
+    box-shadow: 0 1px 1.5px rgb(var(--shade) / 0.3);
+  }
+  .card.is-selected,
+  .card.is-next.is-selected {
+    box-shadow:
+      0 0 0 3px var(--blue),
+      var(--shadow-lift);
+  }
+  /* 活動：牛皮紙。選修：黃色便利貼 */
+  .card.event,
+  .card.event:hover,
+  .card.event.is-selected {
+    padding-top: 0;
+    border: 0;
+    background: var(--grain), var(--kraft);
+    box-shadow: var(--shadow);
+  }
+  .card.event::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -12px;
+    width: 5rem;
+    height: 24px;
+    translate: -50% 0;
+    rotate: -3deg;
+    background: rgb(246 244 236 / 0.62);
+    border-inline: 1px dashed rgb(140 135 120 / 0.45);
+  }
+  .card.tool,
+  .card.tool:hover,
+  .card.tool.is-selected {
+    padding-top: 0;
+    border: 0;
+    background: linear-gradient(to bottom, rgb(255 252 235 / 0.35), transparent 30%), var(--sticky);
+    box-shadow: var(--shadow);
+  }
+  .card.event.is-selected,
+  .card.tool.is-selected {
+    box-shadow:
+      0 0 0 3px var(--blue),
+      var(--shadow-lift);
+  }
+  .card.event .title,
+  .card.tool .title {
+    font-size: 1.25rem;
+  }
+  .card.event .sub,
+  .card.tool .sub {
+    color: var(--muted);
+    font-weight: 700;
+    font-size: 1rem;
+  }
+  .board-tools {
+    border: 2px solid var(--ink);
+    border-radius: var(--wob-b);
+    background: var(--surface);
+  }
+  .board-tools button {
+    border-radius: var(--wob-a);
+    font-size: 1rem;
+  }
+  .board-tools output {
+    font-size: 1rem;
+  }
+  .inspector {
+    background: var(--grain), var(--surface);
+    border-left: 0;
+    box-shadow: -3px 0 14px rgb(var(--shade) / 0.16);
+  }
+  .inspector h2 .no {
+    color: var(--blue);
+    font-size: 2.6rem;
+  }
+  .inspector h3 {
+    font-weight: 700;
+  }
+  .inspector .practice {
+    border-radius: 2px;
+  }
+  .inspector .links li,
+  .inspector .flow,
+  .inspector .flow li {
+    border-color: var(--rule);
+    border-width: 1.5px;
+  }
+  .inspector .links button {
+    color: var(--blue);
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 0.24em;
+  }
+  .inspector .links span,
+  .inspector .where,
+  .inspector .why,
+  .inspector .pending {
+    font-size: 1rem;
+  }
+  .app .done .box {
+    width: 2rem;
+    height: 2rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--wob-a);
+  }
+  .app .done input:checked + .box {
+    background: var(--surface);
+    border-color: var(--ink);
+    color: var(--green);
+  }
+  .list {
+    background: none;
+  }
+  .list-inner {
+    margin-block: 1.5rem 3rem;
+    padding: 0.5rem clamp(1rem, 4vw, 2.5rem) 2.5rem;
+    background: var(--grain), var(--surface);
+    border-radius: 2px;
+    box-shadow: var(--shadow);
+  }
+  .list h2 {
+    font-family: var(--hand);
+    font-size: 1.3rem;
+  }
+  .list li {
+    border-bottom: 1.5px solid var(--rule);
+  }
+  .list .no {
+    font-size: 1.7rem;
+    color: var(--blue);
+  }
+  @media (max-width: 900px) {
+    .inspector {
+      box-shadow: 0 -6px 24px rgb(var(--shade) / 0.25);
+      border-radius: 2px;
+    }
+    .inspector .close {
+      border: 2px solid var(--ink);
+      border-radius: var(--wob-a);
+      background: var(--surface);
+    }
+  }
+
+  /* 大綱版的課：沒有進度，清單不能點進去 */
+  .inspector .practice.outline p {
+    margin-top: 0.4rem;
+  }
+  .inspector .practice.outline {
+    background: var(--sticky);
+  }
+  .list li.plain {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .list li .item {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    gap: 0 0.75rem;
+    align-items: baseline;
+    padding: 0.8rem 0;
+  }
+
+  /* 嵌在課程首頁裡的白板：像一塊釘在桌上的板子 */
+  .app.embed {
+    position: relative;
+    width: min(100% - 2 * var(--gutter), 86rem);
+    height: min(84vh, 820px);
+    margin-inline: auto;
+    border: 10px solid var(--surface);
+    border-radius: 2px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .app.embed .bar {
+    padding-inline: 1rem;
+  }
+  .app.embed .canvas {
+    box-shadow: inset 0 2px 6px rgb(var(--shade) / 0.18);
+  }
+  .bar .expand {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.5rem;
+    padding: 0.1rem 0.9rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--wob-a);
+    background: var(--surface);
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+  }
+  .bar .expand:hover {
+    background: var(--paper);
+  }
+  @media (max-width: 900px) {
+    .app.embed {
+      height: min(60vh, 560px);
+      border-width: 6px;
+    }
+    .app.embed .bar .progress {
+      margin-right: auto;
+    }
+  }

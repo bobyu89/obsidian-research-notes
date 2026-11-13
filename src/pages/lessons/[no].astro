@@ -1,0 +1,146 @@
+---
+import Base from "../../layouts/Base.astro";
+import RoleSwitch from "../../components/RoleSwitch.astro";
+import Art from "../../components/Art.astro";
+import "../../styles/deck.css";
+import "../../styles/lesson.css";
+import { lessons } from "../../data/course";
+import { renderScene } from "../../lib/scenes.js";
+import { url } from "../../lib/url";
+
+export function getStaticPaths() {
+  return lessons.map((l) => ({ params: { no: String(l.no) }, props: { lesson: l } }));
+}
+
+const { lesson } = Astro.props;
+const prev = lessons[lesson.no - 1];
+const next = lessons[lesson.no + 1];
+const scenes = lesson.slides.map((s, i) => renderScene(s, lesson, i, url("/art/"))).join("\n");
+const lessonUrl = (n: number) => url(`/lessons/${n}/`);
+---
+
+<Base title={`第 ${lesson.no} 堂　${lesson.title}`} current="course" description={lesson.why ?? lesson.title}>
+  <main class="lesson" data-lesson-no={lesson.no} data-course="obsidian">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="所在位置">
+        <a href={url("/")}>Obsidian 研究筆記課</a>
+        <span aria-hidden="true">／</span>
+        <a href={url("/board/")}>學習白板</a>
+        <span aria-hidden="true">／</span>
+        <span>{lesson.mod}　{lesson.modName}</span>
+      </nav>
+      <header class="lesson-head">
+        <span class="no" aria-hidden="true">{lesson.no}</span>
+        <div>
+          <h1><span class="visually-hidden">第 {lesson.no} 堂　</span>{lesson.title}</h1>
+          {lesson.why && <p class="why">{lesson.why}</p>}
+        </div>
+      </header>
+    </div>
+
+    <section class="deck-wrap" aria-label="這一堂的簡報">
+      <div class="deck" data-deck tabindex="0" aria-roledescription="簡報">
+        <div id="stage" set:html={scenes} />
+      </div>
+      <div class="deck-bar">
+        <button type="button" class="btn btn-quiet" data-deck-prev aria-label="上一張">
+          <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"
+            ><path d="M11 4 6 9l5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg
+          >
+        </button>
+        <span class="count" aria-live="polite"><b data-deck-current>1</b> / {lesson.slides.length}</span>
+        <button type="button" class="btn btn-quiet" data-deck-next aria-label="下一張">
+          <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"
+            ><path d="m7 4 5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg
+          >
+        </button>
+        <span class="hint">點簡報後可用鍵盤左右鍵翻頁</span>
+        <span class="hint-small">字太小時，把手機橫放或按全螢幕</span>
+        <button type="button" class="btn btn-quiet full" data-deck-full>全螢幕</button>
+      </div>
+      <p class="video-note">這一堂的影片還在錄製，目前先看簡報。簡報裡的介面畫面是手繪的示意圖，不是實際截圖。</p>
+    </section>
+
+    <div class="wrap below">
+      {
+        lesson.practice && (
+          <section class="practice">
+            <Art name="pencil-cup" size={92} rotate={-6} class="pinned corner" />
+            <div class="practice-head">
+              <h2>{lesson.practice.title.replace(/^換你做：?/, "換你做：") || "換你做"}</h2>
+              <RoleSwitch />
+            </div>
+            {(["a", "b"] as const).map((r) => (
+              <div class="practice-card" data-role-show={r}>
+                <h3>
+                  <span class="tag">{lesson.practice![r].tag}</span>
+                  {lesson.practice![r].head}
+                </h3>
+                <ol>
+                  {lesson.practice![r].lines.map((line) => (
+                    <li>{line}</li>
+                  ))}
+                </ol>
+              </div>
+            ))}
+          </section>
+        )
+      }
+
+      {
+        lesson.question && (
+          <section class="question">
+            <Art name="question-badge" size={92} rotate={8} class="pinned corner" />
+            <h2>留給你的問題</h2>
+            <p>{lesson.question}</p>
+          </section>
+        )
+      }
+
+      <section class="finish">
+        <label class="done">
+          <input type="checkbox" data-done-toggle />
+          <span class="box" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 20 20"
+              ><path d="M4 10.5 8.2 14.5 16 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path></svg
+            >
+          </span>
+          <span>
+            <strong>我學完這一堂了</strong>
+            <small>只記在這台裝置的瀏覽器裡，隨時可以取消。</small>
+          </span>
+          <Art name="done" size={96} rotate={-9} class="done-sticker" />
+        </label>
+        <nav class="pager" aria-label="前後堂">
+          {
+            prev ? (
+              <a href={lessonUrl(prev.no)} rel="prev">
+                <small>上一堂　第 {prev.no} 堂</small>
+                {prev.title}
+              </a>
+            ) : (
+              <span />
+            )
+          }
+          {
+            next ? (
+              <a href={lessonUrl(next.no)} rel="next" class="next">
+                <small>下一堂　第 {next.no} 堂</small>
+                {next.title}
+              </a>
+            ) : (
+              <a href={url("/board/")} class="next">
+                <small>最後一堂了</small>
+                回到學習白板
+              </a>
+            )
+          }
+        </nav>
+      </section>
+    </div>
+  </main>
+</Base>
+
+<script>
+  import "../../scripts/lesson";
+</script>
