@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.astro/
+# impeccable：引擎執行檔在第一次執行時會自動下載
+.claude/skills/impeccable/scripts/bin/
+.impeccable/config.local.json
+.impeccable/review/
+.impeccable/mocks/
+.impeccable/questions/

@@ -1,0 +1,29 @@
+---
+// 身分切換：研究生（A 卡）／老師（B 卡）。選擇存在瀏覽器裡，全站共用。
+interface Props {
+  label?: string;
+}
+const { label = "我的身分" } = Astro.props;
+---
+
+<div class="role-switch" role="group" aria-label={label} data-role-switch>
+  <button type="button" data-role-value="a" aria-pressed="true">研究生</button>
+  <button type="button" data-role-value="b" aria-pressed="false">老師</button>
+</div>
+
+<script>
+  import { getRole, setRole } from "../scripts/progress";
+
+  const sync = () => {
+    const role = getRole();
+    document.documentElement.dataset.role = role;
+    document.querySelectorAll<HTMLButtonElement>("[data-role-switch] button").forEach((b) => {
+      b.setAttribute("aria-pressed", String(b.dataset.roleValue === role));
+    });
+  };
+  document.querySelectorAll<HTMLButtonElement>("[data-role-switch] button").forEach((b) => {
+    b.addEventListener("click", () => setRole(b.dataset.roleValue === "b" ? "b" : "a"));
+  });
+  document.addEventListener("lb:role", sync);
+  sync();
+</script>

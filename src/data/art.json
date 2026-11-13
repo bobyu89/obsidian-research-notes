@@ -1,0 +1,234 @@
+{
+ "doodle": {
+  "star": {
+   "w": 96,
+   "h": 96
+  },
+  "sparkle": {
+   "w": 96,
+   "h": 96
+  },
+  "sparkle-trio": {
+   "w": 96,
+   "h": 96
+  },
+  "light-bulb": {
+   "w": 96,
+   "h": 96
+  },
+  "pencil": {
+   "w": 96,
+   "h": 96
+  },
+  "book": {
+   "w": 96,
+   "h": 96
+  },
+  "key": {
+   "w": 96,
+   "h": 96
+  },
+  "sprout": {
+   "w": 96,
+   "h": 96
+  },
+  "paper-plane": {
+   "w": 96,
+   "h": 96
+  },
+  "eye": {
+   "w": 96,
+   "h": 96
+  },
+  "cup": {
+   "w": 96,
+   "h": 96
+  },
+  "arrow-swoop": {
+   "w": 96,
+   "h": 96
+  },
+  "arrow-loop": {
+   "w": 96,
+   "h": 96
+  },
+  "arrow-bounce": {
+   "w": 96,
+   "h": 96
+  },
+  "underline-scribble": {
+   "w": 96,
+   "h": 96
+  },
+  "underline-flourish": {
+   "w": 96,
+   "h": 96
+  },
+  "asterisk-burst": {
+   "w": 96,
+   "h": 96
+  },
+  "exclaim-burst": {
+   "w": 96,
+   "h": 96
+  },
+  "confetti": {
+   "w": 96,
+   "h": 96
+  },
+  "dotted-trail": {
+   "w": 96,
+   "h": 96
+  },
+  "corner-flourish": {
+   "w": 96,
+   "h": 96
+  },
+  "squiggle-border": {
+   "w": 96,
+   "h": 24
+  },
+  "heart": {
+   "w": 96,
+   "h": 96
+  },
+  "smiley": {
+   "w": 96,
+   "h": 96
+  }
+ },
+ "sticker": {
+  "done": {
+   "w": 116,
+   "h": 116
+  },
+  "new": {
+   "w": 116,
+   "h": 116
+  },
+  "wip": {
+   "w": 116,
+   "h": 116
+  },
+  "ok": {
+   "w": 116,
+   "h": 116
+  },
+  "wow": {
+   "w": 116,
+   "h": 116
+  },
+  "notebook": {
+   "w": 116,
+   "h": 116
+  },
+  "laptop-open": {
+   "w": 116,
+   "h": 116
+  },
+  "highlighter": {
+   "w": 116,
+   "h": 116
+  },
+  "magnifier": {
+   "w": 116,
+   "h": 116
+  },
+  "pencil-cup": {
+   "w": 116,
+   "h": 116
+  },
+  "tape-roll": {
+   "w": 116,
+   "h": 116
+  },
+  "desk-lamp": {
+   "w": 116,
+   "h": 116
+  },
+  "coffee-to-go": {
+   "w": 116,
+   "h": 116
+  },
+  "potted-plant": {
+   "w": 116,
+   "h": 116
+  },
+  "cat-loaf": {
+   "w": 116,
+   "h": 116
+  },
+  "owl": {
+   "w": 116,
+   "h": 116
+  },
+  "thinking-face": {
+   "w": 116,
+   "h": 116
+  },
+  "thumbs-up": {
+   "w": 116,
+   "h": 116
+  },
+  "party-popper": {
+   "w": 116,
+   "h": 116
+  },
+  "stamp-approved": {
+   "w": 160,
+   "h": 56
+  },
+  "stamp-draft": {
+   "w": 160,
+   "h": 56
+  },
+  "stamp-new": {
+   "w": 96,
+   "h": 96
+  },
+  "a-plus": {
+   "w": 116,
+   "h": 116
+  },
+  "hundred": {
+   "w": 116,
+   "h": 116
+  },
+  "first-place": {
+   "w": 116,
+   "h": 116
+  },
+  "rocket": {
+   "w": 116,
+   "h": 116
+  },
+  "hand-point-right": {
+   "w": 116,
+   "h": 116
+  },
+  "arrow-curved": {
+   "w": 116,
+   "h": 116
+  },
+  "scribble-circle": {
+   "w": 116,
+   "h": 116
+  },
+  "question-badge": {
+   "w": 116,
+   "h": 116
+  },
+  "exclamation-badge": {
+   "w": 116,
+   "h": 116
+  },
+  "sunflower": {
+   "w": 116,
+   "h": 116
+  },
+  "envelope-heart": {
+   "w": 116,
+   "h": 116
+  }
+ }
+}

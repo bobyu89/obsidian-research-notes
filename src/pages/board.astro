@@ -1,0 +1,12 @@
+---
+import Base from "../layouts/Base.astro";
+import ObsidianBoard from "../components/boards/ObsidianBoard.astro";
+import { url } from "../lib/url";
+---
+
+<Base bare title="學習白板｜Obsidian 研究筆記課" description="Obsidian 研究筆記課的學習歷程白板：17 堂課與它們之間的呼應。">
+  <ObsidianBoard />
+  <noscript>
+    <p style="padding:1rem">白板需要 JavaScript。你也可以直接從<a href={url("/#lessons")}>課程目錄</a>進入每一堂。</p>
+  </noscript>
+</Base>

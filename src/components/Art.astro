@@ -1,0 +1,31 @@
+---
+// looseleaf 的貼紙與塗鴉。純裝飾，讀屏會略過。
+import art from "../data/art.json";
+import { url } from "../lib/url";
+
+interface Props {
+  kind?: "sticker" | "doodle";
+  name: string;
+  /** 顯示寬度，px */
+  size?: number;
+  /** 旋轉角度 */
+  rotate?: number;
+  class?: string;
+}
+const { kind = "sticker", name, size = 96, rotate = 0, class: cls } = Astro.props;
+const meta = (art as Record<string, Record<string, { w: number; h: number }>>)[kind][name];
+if (!meta) throw new Error(`沒有這張圖：${kind} ${name}。先在 scripts/generate-art.mjs 加進清單。`);
+const height = Math.round((size * meta.h) / meta.w);
+---
+
+<img
+  class:list={["art", kind, cls]}
+  src={url(`/art/${kind}-${name}.svg`)}
+  width={size}
+  height={height}
+  alt=""
+  aria-hidden="true"
+  loading="lazy"
+  decoding="async"
+  style={rotate ? `rotate:${rotate}deg` : undefined}
+/>

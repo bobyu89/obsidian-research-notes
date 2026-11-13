@@ -1,0 +1,721 @@
+---
+import Base from "../layouts/Base.astro";
+import RoleSwitch from "../components/RoleSwitch.astro";
+import Art from "../components/Art.astro";
+import ObsidianBoard from "../components/boards/ObsidianBoard.astro";
+import { obsidianCourse } from "../data/site";
+import { lessons, modules, lessonsOf, stages, liveFlow, workshopFlow, lessonShape, roles, tools } from "../data/course";
+import { url } from "../lib/url";
+
+const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
+---
+
+<Base
+  title="Obsidian 研究筆記課"
+  current="course"
+  description="給護理領域研究生與老師的 Obsidian 課：17 堂預錄、一場直播、一場實體工作坊。"
+>
+  <main>
+    <section class="top">
+      <div class="wrap">
+        <Art name="thinking-face" size={150} rotate={7} class="pinned face" />
+        <h1>Obsidian <span class="nb">研究筆記課</span></h1>
+        <p class="hook"><span class="hi">「我明明讀過，為什麼找不到？」</span></p>
+        <p class="lede">
+          找不到，通常不是記性不好，是筆記沒有一個固定的家。這門課用 {lessons.length} 堂短課，帶護理領域的研究生與老師把筆記搬進
+          Obsidian，讓它們互相連結，需要的時候找得到、用得上。
+        </p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#board">看學習白板</a>
+          <a class="btn btn-quiet" href="#lessons">看課程目錄</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="board-embed" id="board" aria-label="學習白板">
+      <ObsidianBoard embed />
+      <p class="board-hint wrap">拖曳可以移動畫面，點卡片看那一堂的內容。想看大一點，按右上角的「放大看」。</p>
+    </section>
+
+    <section class="section who">
+      <div class="wrap">
+        <div class="who-head">
+          <h2>同一個問題，在兩種人身上的樣子</h2>
+          <RoleSwitch />
+        </div>
+        {
+          (["a", "b"] as const).map((r) => (
+            <div class="who-body" data-role-show={r}>
+              <ol class="scene">
+                {roles[r].scene.map((line) => (
+                  <li>{line}</li>
+                ))}
+              </ol>
+              <div class="makes">
+                <p>
+                  上完課，你會做出一張<strong>{roles[r].makes}</strong>
+                </p>
+                <span>{roles[r].makesNote}</span>
+              </div>
+            </div>
+          ))
+        }
+        <p class="common">兩邊浪費的都是同一種時間：把做過的事再做一次。</p>
+      </div>
+    </section>
+
+    <section class="section path" id="stages">
+      <div class="wrap">
+        <Art name="rocket" size={100} rotate={10} class="pinned" />
+        <h2>四個階段，三種上課方式</h2>
+        <p class="lede">三種方式內容不重疊：直播不教操作細節，工作坊不重講功能。</p>
+        <ol class="stage-list">
+          {
+            stages.map((s) => (
+              <li>
+                <div class="stage-name">
+                  <strong>{s.name}</strong>
+                  <span>{s.length}</span>
+                </div>
+                <p class="job">{s.job}</p>
+                <p>{s.summary}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <section class="section lessons" id="lessons">
+      <div class="wrap">
+        <Art name="notebook" size={100} rotate={-6} class="pinned" />
+        <h2>課程目錄</h2>
+        <p class="lede">
+          學完的課會在這裡打勾。<span data-progress-text></span>
+        </p>
+        {
+          modules.map((m) => (
+            <div class="module">
+              <h3>
+                {m.name}　{m.label}
+              </h3>
+              <ol>
+                {lessonsOf(m.id).map((l) => (
+                  <li data-lesson={l.no}>
+                    <a href={url(`/lessons/${l.no}/`)}>
+                      <span class="no">{l.no}</span>
+                      <span class="title">{l.title}</span>
+                      <span class="why">{l.why}</span>
+                      <span class="state" aria-hidden="true">
+                        <svg width="20" height="20" viewBox="0 0 20 20">
+                          <path d="M4 10.5 8.2 14.5 16 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                      </span>
+                      <span class="visually-hidden" data-done-label />
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="section shape">
+      <div class="wrap">
+        <Art name="highlighter" size={100} rotate={6} class="pinned" />
+        <h2>每一堂都照同樣的五段走</h2>
+        <ol class="shape-list">
+          {
+            lessonShape.map(([head, note], i) => (
+              <li>
+                <span class="step">{i + 1}</span>
+                <strong>{head}</strong>
+                <span>{note}</span>
+              </li>
+            ))
+          }
+        </ol>
+        <p class="note">
+          不評分、可以弄壞。練習都在一個叫「練習用」的 vault 裡做。示範用的文獻 A 到 D、學生甲與 meeting
+          紀錄都是虛構的示範資料。
+        </p>
+      </div>
+    </section>
+
+    <section class="section tools" id="tools">
+      <div class="wrap">
+        <Art name="magnifier" size={100} rotate={-8} class="pinned" />
+        <h2>選修：三樣可以接著試的東西</h2>
+        <p class="lede">不在 17 堂課裡，也不是必學。學完對應的課，覺得需要再裝。</p>
+        {
+          tools.map((t) => (
+            <article id={t.id}>
+              <div>
+                <h3>{t.name}</h3>
+                <p class="kind">
+                  {t.kind}　學完{t.after.map((n) => `第 ${n} 堂`).join("、")}再來
+                </p>
+                <p>{t.summary}</p>
+                <p class="why">{t.why}</p>
+              </div>
+              <div>
+                <ol>
+                  {t.steps.map((step) => (
+                    <li>{step}</li>
+                  ))}
+                </ol>
+                <p class="caution">{t.note}</p>
+                <a href={t.url} target="_blank" rel="noopener">
+                  GitHub 專案頁：{t.name}
+                </a>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="section events kraft" id="events">
+      <div class="wrap">
+        <Art name="coffee-to-go" size={100} rotate={6} class="pinned" />
+        <h2>直播與工作坊</h2>
+        <div class="event-grid">
+          <article id="live">
+            <h3>線上直播　{total(liveFlow)} 分鐘</h3>
+            <p class="when">
+              {obsidianCourse.liveDate || "日期即將公布"}
+            </p>
+            <ol class="flow">
+              {
+                liveFlow.map(([what, min]) => (
+                  <li>
+                    <span>{what}</span>
+                    <span class="min">{min} 分</span>
+                  </li>
+                ))
+              }
+            </ol>
+            {
+              obsidianCourse.meetUrl ? (
+                <a class="btn btn-primary" href={obsidianCourse.meetUrl} target="_blank" rel="noopener">
+                  加入 Google Meet 直播
+                </a>
+              ) : (
+                <p class="pending">Google Meet 連結即將公布，公布後會出現在這裡。</p>
+              )
+            }
+          </article>
+          <article id="workshop">
+            <h3>實體工作坊　3 小時</h3>
+            <p class="when">
+              {obsidianCourse.workshopDate || "日期即將公布"}
+              {obsidianCourse.workshopPlace && `　${obsidianCourse.workshopPlace}`}
+            </p>
+            <ol class="flow">
+              {
+                workshopFlow.map(([what, min]) => (
+                  <li>
+                    <span>{what}</span>
+                    <span class="min">{min} 分</span>
+                  </li>
+                ))
+              }
+            </ol>
+            <p class="pending">請先看完第 0 到 12 堂，並帶三到五篇自己的文獻。</p>
+          </article>
+        </div>
+        <p class="pending tba">報名方式與講者介紹即將公布。</p>
+      </div>
+    </section>
+
+    <section class="section close">
+      <div class="wrap">
+        <Art name="thumbs-up" size={100} rotate={8} class="pinned" />
+        <h2 data-close-title>從第 0 堂開始，只要五分鐘</h2>
+        <p class="lede" data-close-note>第 0 堂不用打開任何軟體，只請你想一件事：你的筆記，現在都放在哪裡？</p>
+        <div class="actions">
+          <a class="btn btn-primary" href={url("/lessons/0/")} data-close-link>開始第 0 堂</a>
+          <a class="btn btn-quiet" href="#board">回到學習白板</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</Base>
+
+<script define:vars={{ titles: lessons.map((l) => l.title), base: url("/lessons/") }} is:inline>
+  window.__lessonTitles = titles;
+  window.__lessonBase = base;
+</script>
+<script>
+  import { getDone, nextLesson } from "../scripts/progress";
+
+  const titles = (window as any).__lessonTitles as string[];
+  const base = (window as any).__lessonBase as string;
+
+  function paint() {
+    const done = getDone();
+    document.querySelectorAll<HTMLElement>("[data-lesson]").forEach((li) => {
+      const isDone = done.has(Number(li.dataset.lesson));
+      li.classList.toggle("is-done", isDone);
+      const label = li.querySelector("[data-done-label]");
+      if (label) label.textContent = isDone ? "（已學完）" : "";
+    });
+    const text = document.querySelector("[data-progress-text]");
+    if (text) text.textContent = done.size ? `你已經學完 ${done.size} 堂，共 ${titles.length} 堂。` : "";
+
+    const next = nextLesson(titles.length, done);
+    const title = document.querySelector("[data-close-title]");
+    const note = document.querySelector("[data-close-note]");
+    const link = document.querySelector<HTMLAnchorElement>("[data-close-link]");
+    if (!title || !note || !link) return;
+    if (next === null) {
+      title.textContent = "17 堂都學完了";
+      note.textContent = "回白板看看整張圖，或挑一堂再看一次。";
+      link.textContent = "回到第 0 堂";
+      link.href = `${base}0/`;
+    } else if (done.size > 0) {
+      title.textContent = `接著學第 ${next} 堂`;
+      note.textContent = titles[next];
+      link.textContent = `開始第 ${next} 堂`;
+      link.href = `${base}${next}/`;
+    }
+  }
+  paint();
+  document.addEventListener("lb:progress", paint);
+</script>
+
+<style>
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+  .top {
+    padding-block: clamp(2.5rem, 7vw, 5.5rem) clamp(2.5rem, 6vw, 4.5rem);
+  }
+  .hook {
+    margin: 1.25rem 0 1rem;
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(1.4rem, 3.4vw, 2.4rem);
+    line-height: 1.4;
+    color: var(--violet);
+  }
+
+  /* 兩種身分 */
+  .who {
+    background: var(--role-soft);
+    transition: background-color 0.4s var(--ease-out);
+  }
+  .who-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    margin-bottom: 2rem;
+  }
+  .who-body {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: 2rem clamp(2rem, 6vw, 5rem);
+    align-items: start;
+  }
+  :root:not([data-role="b"]) .who-body[data-role-show="a"],
+  :root[data-role="b"] .who-body[data-role-show="b"] {
+    display: grid;
+  }
+  .scene {
+    counter-reset: s;
+  }
+  .scene li {
+    padding: 0.9rem 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--role) 28%, transparent);
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(1.25rem, 2.6vw, 1.9rem);
+    line-height: 1.45;
+  }
+  .makes {
+    padding: 1.5rem 1.75rem;
+    border-radius: 18px;
+    background: var(--surface);
+  }
+  .makes p {
+    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+  .makes strong {
+    color: var(--role);
+  }
+  .nb {
+    white-space: nowrap;
+  }
+  .makes span {
+    color: var(--muted);
+  }
+  .common {
+    margin-top: 2rem;
+    font-weight: 700;
+  }
+
+  /* 四階段 */
+  .stage-list {
+    margin-top: 2.5rem;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0 1.5rem;
+  }
+  .stage-list li {
+    position: relative;
+    padding-top: 1.75rem;
+    border-top: 2px solid var(--ink);
+  }
+  .stage-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: -8px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+  }
+  .stage-name strong {
+    display: block;
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 1.35rem;
+    line-height: 1.3;
+  }
+  .stage-name span {
+    color: var(--muted);
+  }
+  .job {
+    margin: 0.75rem 0 0.4rem;
+    font-weight: 700;
+    color: var(--violet);
+  }
+  .stage-list p:last-child {
+    color: var(--muted);
+    font-size: 0.9875rem;
+  }
+
+  /* 目錄 */
+  .lessons {
+    background: var(--surface);
+  }
+  .module {
+    margin-top: 2.5rem;
+  }
+  .module h3 {
+    padding-bottom: 0.6rem;
+    border-bottom: 2px solid var(--ink);
+  }
+  .module li a {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr) minmax(0, 1.4fr) 1.5rem;
+    gap: 0.25rem 1rem;
+    align-items: baseline;
+    padding: 0.85rem 0.5rem 0.85rem 0;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink);
+    text-decoration: none;
+    transition: background-color 0.18s var(--ease-out);
+  }
+  .module li a:hover {
+    background: var(--paper);
+  }
+  .module .no {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 1.5rem;
+    line-height: 1.2;
+    color: var(--violet);
+    padding-left: 0.5rem;
+  }
+  .module .title {
+    font-weight: 700;
+  }
+  .module .why {
+    color: var(--muted);
+    font-size: 0.9375rem;
+  }
+  .module .state {
+    align-self: center;
+    color: var(--teal);
+    opacity: 0;
+    line-height: 0;
+  }
+  .module li.is-done .state {
+    opacity: 1;
+  }
+  .module li.is-done .no {
+    color: var(--muted);
+  }
+
+  /* 五段 */
+  .shape-list {
+    margin-top: 2rem;
+    border-top: 2px solid var(--ink);
+  }
+  .shape-list li {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr) minmax(0, 1.6fr);
+    gap: 0.25rem 1rem;
+    align-items: baseline;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .shape-list .step {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 1.35rem;
+    color: var(--violet);
+  }
+  .shape-list strong {
+    font-size: 1.125rem;
+  }
+  .shape-list li > span:last-child {
+    color: var(--muted);
+  }
+  .note {
+    margin-top: 1.5rem;
+    max-width: var(--measure);
+    color: var(--muted);
+  }
+
+  /* 選修工具 */
+  .tools {
+    padding-top: 0;
+  }
+  .tools article {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: 1.5rem clamp(2rem, 6vw, 5rem);
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--ink);
+    scroll-margin-top: 1rem;
+  }
+  .tools h3 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 1.5rem;
+  }
+  .tools .kind {
+    margin-bottom: 0.75rem;
+    color: var(--violet);
+    font-weight: 700;
+  }
+  .tools .why {
+    margin-top: 0.75rem;
+    color: var(--muted);
+  }
+  .tools ol {
+    counter-reset: t;
+    border-top: 1px solid var(--rule);
+  }
+  .tools ol li {
+    counter-increment: t;
+    display: grid;
+    grid-template-columns: 1.75rem 1fr;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .tools ol li::before {
+    content: counter(t);
+    font-weight: 700;
+    color: var(--violet);
+  }
+  .tools .caution {
+    margin: 1rem 0;
+    color: var(--muted);
+    font-size: 0.9375rem;
+  }
+  :global(.tools article:target) h3 {
+    color: var(--violet);
+  }
+
+  /* 活動 */
+  .event-grid {
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 3rem clamp(2rem, 6vw, 5rem);
+  }
+  .events h3 {
+    font-size: 1.35rem;
+  }
+  .when {
+    color: var(--violet-light);
+    margin-bottom: 1rem;
+  }
+  .flow {
+    border-top: 1px solid rgb(244 243 249 / 0.25);
+    margin-bottom: 1.5rem;
+  }
+  .flow li {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid rgb(244 243 249 / 0.14);
+  }
+  .flow .min {
+    flex: none;
+    color: var(--on-dark-muted);
+  }
+  .pending {
+    color: var(--on-dark-muted);
+  }
+  .tba {
+    margin-top: 2.5rem;
+  }
+  :global(article:target) h3 {
+    color: var(--violet-light);
+  }
+
+  @media (max-width: 860px) {
+    .stage-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: 2.5rem;
+    }
+    .tools article {
+      grid-template-columns: 1fr;
+    }
+    .event-grid,
+    .who-body {
+      grid-template-columns: 1fr !important;
+    }
+  }
+  @media (max-width: 620px) {
+    .module li a {
+      grid-template-columns: 2.5rem minmax(0, 1fr) 1.5rem;
+    }
+    .module .why {
+      grid-column: 2;
+      grid-row: 2;
+    }
+    .module .state {
+      grid-row: 1;
+      grid-column: 3;
+    }
+    .shape-list li {
+      grid-template-columns: 2.5rem minmax(0, 1fr);
+    }
+    .shape-list li > span:last-child {
+      grid-column: 2;
+    }
+    .stage-list {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .board-embed {
+    padding-block: clamp(0.5rem, 2vw, 1.5rem) clamp(1.5rem, 4vw, 2.5rem);
+    scroll-margin-top: 1rem;
+  }
+  .board-hint {
+    margin-top: 0.75rem;
+    color: var(--muted);
+    font-size: 1rem;
+  }
+
+  /* ───── 手繪紙張風的調整 ───── */
+  .top .wrap {
+    position: relative;
+  }
+  .top :global(.face) {
+    right: 6%;
+    top: 0.5rem;
+  }
+  @media (max-width: 900px) {
+    .top :global(.face) {
+      display: none;
+    }
+  }
+  .top {
+    padding-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  }
+  .top .lede {
+    color: var(--ink);
+  }
+  .hook {
+    color: var(--ink);
+  }
+  .who {
+    background: none;
+  }
+  .who > .wrap {
+    background: var(--grain), var(--role-soft);
+    transition: background-color 0.4s var(--ease-out);
+  }
+  .scene li {
+    border-bottom: 1.5px solid color-mix(in srgb, var(--role) 35%, transparent);
+  }
+  .makes {
+    padding-top: 2.6rem;
+    border-radius: 2px;
+    background:
+      linear-gradient(var(--rule-red), var(--rule-red)) 0 1.8rem / 100% 2px no-repeat,
+      var(--card);
+    box-shadow: var(--shadow);
+    rotate: 1.2deg;
+  }
+  .lessons {
+    background: none;
+  }
+  .module li a {
+    border-bottom: 1.5px solid var(--rule);
+  }
+  .module .no,
+  .shape-list .step {
+    font-size: 1.7rem;
+  }
+  .module .title,
+  .stage-name strong {
+    font-weight: 700;
+  }
+  .module .state {
+    color: var(--green);
+  }
+  .module .state svg {
+    width: 26px;
+    height: 26px;
+    rotate: -6deg;
+  }
+  .tools {
+    padding-top: clamp(1.75rem, 4vw, 3rem);
+  }
+  .tools h3 {
+    font-size: 1.6rem;
+  }
+  .tools ol {
+    border-top: 1.5px solid var(--rule);
+  }
+  .tools ol li {
+    border-bottom: 1.5px solid var(--rule);
+  }
+  .when {
+    color: var(--red);
+  }
+  .flow {
+    border-top: 1.5px solid rgb(var(--shade) / 0.35);
+  }
+  .flow li {
+    border-bottom: 1.5px solid rgb(var(--shade) / 0.22);
+  }
+  .flow .min,
+  .pending {
+    color: var(--muted);
+  }
+  :global(article:target) h3 {
+    color: var(--blue-deep);
+  }
+</style>

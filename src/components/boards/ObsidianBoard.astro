@@ -1,0 +1,300 @@
+---
+import RoleSwitch from "../../components/RoleSwitch.astro";
+import Art from "../../components/Art.astro";
+import "../../styles/board.css";
+import { obsidianCourse } from "../../data/site";
+import {
+  lessons,
+  modules,
+  lessonsOf,
+  boardNodes,
+  boardEdges,
+  boardRegions,
+  tools,
+  liveFlow,
+  workshopFlow,
+  BOARD_W,
+  BOARD_H,
+  CARD_W,
+  CARD_H,
+} from "../../data/course";
+import { url } from "../../lib/url";
+
+const lessonUrl = (n: number) => url(`/lessons/${n}/`);
+const nodeName = (id: string) => {
+  const n = boardNodes.find((x) => x.id === id)!;
+  return n.kind === "lesson" ? `第 ${n.no} 堂　${n.title}` : n.title;
+};
+const linksOf = (id: string) =>
+  boardEdges
+    .filter((e) => e.label && (e.from === id || e.to === id))
+    .map((e) => ({ label: e.label!, other: e.from === id ? e.to : e.from, dir: e.from === id ? "之後" : "之前" }));
+const check = `<svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5 8.2 14.5 16 6" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+interface Props {
+  /** 嵌在課程首頁裡：固定高度、滾輪不搶頁面捲動、標題降一級 */
+  embed?: boolean;
+}
+const { embed = false } = Astro.props;
+const Title = embed ? "h2" : "h1";
+const ListTag = embed ? "div" : "main";
+---
+
+<div class:list={["app", { embed }]} data-embed={embed ? "" : undefined} data-board data-course="obsidian" data-view="board">
+  <header class="bar">
+    {
+      !embed && (
+        <a class="back" href={url("/")} aria-label="回到課程介紹">
+          <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"
+            ><path d="M11 4 6 9l5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg
+          >
+          <span>Obsidian 研究筆記課</span>
+        </a>
+      )
+    }
+    <Title>學習白板</Title>
+    <p class="progress" aria-live="polite">
+      <span class="meter" aria-hidden="true"><i data-progress-bar></i></span>
+      <span data-progress-text>學完 0 / {lessons.length} 堂</span>
+    </p>
+    <RoleSwitch />
+    <div class="view-switch" role="group" aria-label="檢視方式">
+      <button type="button" data-view-btn="board" aria-pressed="true">白板</button>
+      <button type="button" data-view-btn="list" aria-pressed="false">清單</button>
+    </div>
+    {
+      embed && (
+        <a class="expand" href={url("/board/")}>
+          放大看
+        </a>
+      )
+    }
+  </header>
+
+  <div class="canvas" data-canvas tabindex="0" aria-label="課程白板。拖曳可以移動畫面，方向鍵也可以；加號與減號縮放。">
+    <div class="world" data-world data-w={BOARD_W} data-h={BOARD_H} style={`width:${BOARD_W}px;height:${BOARD_H}px`}>
+      {
+        boardRegions.map((r) => (
+          <div class="region" style={`left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px`}>
+            <span>{r.label}</span>
+          </div>
+        ))
+      }
+      <svg class="edges" width={BOARD_W} height={BOARD_H} aria-hidden="true">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M1 1 9 5 1 9" fill="none" stroke="context-stroke" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+          </marker>
+        </defs>
+        {
+          boardEdges.map((e, i) => (
+            <path data-edge={i} data-from={e.from} data-to={e.to} class={e.label ? "callback" : "seq"} marker-end="url(#arrow)" />
+          ))
+        }
+      </svg>
+      {
+        boardEdges.map(
+          (e, i) =>
+            e.label && (
+              <span class="edge-label" data-edge-label={i} data-at={e.labelAt ?? 0.5} data-from={e.from} data-to={e.to}>
+                {e.label}
+              </span>
+            ),
+        )
+      }
+      {
+        boardNodes.map((n, i) => (
+          <button
+            type="button"
+            class:list={["card", n.kind]}
+            data-node={n.id}
+            data-no={n.no}
+            data-x={n.x}
+            data-y={n.y}
+            style={`left:${n.x}px;top:${n.y}px;width:${CARD_W}px;height:${CARD_H}px;--tilt:${((((i * 37) % 11) - 5) * 0.28).toFixed(2)}deg`}
+            aria-controls="inspector"
+          >
+            {n.kind === "lesson" ? (
+              <>
+                <span class="no">{n.no}</span>
+                <span class="title">{n.title}</span>
+                <Art name="done" size={62} class="badge" />
+                <span class="visually-hidden" data-state-text />
+              </>
+            ) : (
+              <>
+                <span class="title">{n.title}</span>
+                <span class="sub">{n.sub}</span>
+              </>
+            )}
+          </button>
+        ))
+      }
+    </div>
+
+    <div class="board-tools" role="toolbar" aria-label="白板工具">
+      <button type="button" data-tool="out" aria-label="縮小">
+        <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M4 9h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+      </button>
+      <output data-zoom aria-label="目前縮放">100%</output>
+      <button type="button" data-tool="in" aria-label="放大">
+        <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M4 9h10M9 4v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+      </button>
+      <button type="button" data-tool="fit">看全部</button>
+      <button type="button" data-tool="reset">排回原樣</button>
+    </div>
+  </div>
+
+  <aside class="inspector" id="inspector" data-inspector aria-label="卡片內容">
+    <button type="button" class="close" data-inspector-close aria-label="關閉">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="m4 4 10 10M14 4 4 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+    </button>
+
+    <section data-panel="intro">
+      <Art name="owl" size={96} rotate={5} class="intro-owl" />
+      <h2>這張白板怎麼看</h2>
+      <ul class="legend">
+        <li><svg width="44" height="12" aria-hidden="true"><path d="M2 6h40" class="seq"></path></svg>實線是上課順序</li>
+        <li><svg width="44" height="12" aria-hidden="true"><path d="M2 6h40" class="callback"></path></svg>虛線是前後呼應的地方</li>
+      </ul>
+      <p>點一張卡片看那一堂在教什麼。卡片可以拖到你順手的位置，位置會記在這台裝置上。</p>
+      <a class="btn btn-primary" data-next-link href={lessonUrl(0)}>開始第 0 堂</a>
+    </section>
+
+    {
+      lessons.map((l) => (
+        <section data-panel={`l${l.no}`} hidden>
+          <h2>
+            <span class="no">{l.no}</span>
+            {l.title}
+          </h2>
+          {l.why && <p class="why">{l.why}</p>}
+          <p class="where">
+            {l.mod}　{l.modName}
+          </p>
+          {l.practice &&
+            (["a", "b"] as const).map((r) => (
+              <div class="practice" data-role-show={r}>
+                <h3>
+                  <span class="tag">{l.practice![r].tag}</span>換你做
+                </h3>
+                <ol>
+                  {l.practice![r].lines.map((line) => (
+                    <li>{line}</li>
+                  ))}
+                </ol>
+              </div>
+            ))}
+          {linksOf(`l${l.no}`).length > 0 && (
+            <div class="links">
+              <h3>和其他堂的呼應</h3>
+              <ul>
+                {linksOf(`l${l.no}`).map((k) => (
+                  <li>
+                    <button type="button" data-goto={k.other}>
+                      {nodeName(k.other)}
+                    </button>
+                    <span>{k.label}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <div class="panel-actions">
+            <a class="btn btn-primary" href={lessonUrl(l.no)}>
+              進入第 {l.no} 堂
+            </a>
+            <label class="done">
+              <input type="checkbox" data-done={l.no} />
+              <span class="box" set:html={check} />
+              學完了
+            </label>
+          </div>
+        </section>
+      ))
+    }
+
+    {
+      tools.map((t) => (
+        <section data-panel={t.id} hidden>
+          <h2>{t.name}</h2>
+          <p class="where">選修　{t.kind}</p>
+          <p class="why">{t.summary}</p>
+          <div class="links">
+            <h3>學完這幾堂再來</h3>
+            <ul>
+              {t.after.map((n) => (
+                <li>
+                  <button type="button" data-goto={`l${n}`}>
+                    {nodeName(`l${n}`)}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <p class="pending">{t.note}</p>
+          <div class="panel-actions">
+            <a class="btn btn-primary" href={url(`/#${t.id}`)}>看怎麼開始</a>
+            <a class="btn btn-quiet" href={t.url} target="_blank" rel="noopener">GitHub 專案頁</a>
+          </div>
+        </section>
+      ))
+    }
+
+    <section data-panel="live" hidden>
+      <h2>線上直播</h2>
+      <p class="why">階段一　{obsidianCourse.liveDate || "日期即將公布"}</p>
+      <ol class="flow">
+        {liveFlow.map(([what, min]) => <li><span>{what}</span><span>{min} 分</span></li>)}
+      </ol>
+      {
+        obsidianCourse.meetUrl ? (
+          <a class="btn btn-primary" href={obsidianCourse.meetUrl} target="_blank" rel="noopener">加入 Google Meet 直播</a>
+        ) : (
+          <p class="pending">Google Meet 連結即將公布。</p>
+        )
+      }
+    </section>
+    <section data-panel="workshop" hidden>
+      <h2>實體工作坊</h2>
+      <p class="why">階段三　{obsidianCourse.workshopDate || "日期即將公布"}</p>
+      <ol class="flow">
+        {workshopFlow.map(([what, min]) => <li><span>{what}</span><span>{min} 分</span></li>)}
+      </ol>
+      <p class="pending">請先看完第 0 到 12 堂，並帶三到五篇自己的文獻。</p>
+    </section>
+  </aside>
+
+  <ListTag class="list" data-list>
+    <div class="list-inner">
+      {
+        modules.map((m) => (
+          <section>
+            <h2>
+              {m.name}　{m.label}
+            </h2>
+            <ol>
+              {lessonsOf(m.id).map((l) => (
+                <li data-list-item={l.no}>
+                  <label class="done">
+                    <input type="checkbox" data-done={l.no} aria-label={`第 ${l.no} 堂學完了`} />
+                    <span class="box" set:html={check} />
+                  </label>
+                  <a href={lessonUrl(l.no)}>
+                    <span class="no">{l.no}</span>
+                    <span class="title">{l.title}</span>
+                    <span class="why">{l.why}</span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </section>
+        ))
+      }
+    </div>
+  </ListTag>
+</div>
+
+<script>
+  import "../../scripts/board";
+</script>
