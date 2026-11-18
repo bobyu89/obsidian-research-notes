@@ -8,7 +8,8 @@
 
 | 路徑 | 內容 |
 |---|---|
-| `/` | 課程介紹：兩種身分、四個階段、嵌入的白板、課程目錄、直播與工作坊 |
+| `/` | 課程介紹：兩種身分、兩堂課加課後參考、嵌入的白板、17 堂簡報、線上課與實體課 |
+| `/prep/` | 課前準備，以及起點 vault 下載 |
 | `/board/` | 學習白板：可拖曳縮放，點卡片看內容，勾選學完 |
 | `/lessons/0/` … `/16/` | 單堂頁：簡報、A/B 練習卡、留給學員的問題 |
 
@@ -30,7 +31,7 @@ npm run build
 
 ## 常見修改
 
-**補上直播的 Google Meet 連結、日期**：改 `src/data/site.ts` 的 `obsidianCourse`。欄位留空時，網站顯示「即將公布」。
+**補上線上課的 Google Meet 連結、日期**：改 `src/data/site.ts` 的 `obsidianCourse`。欄位留空時，網站顯示「即將公布」。
 
 **調整白板的卡片位置、連線與標籤**：改 `src/data/course.ts` 下半部的 `rows`、`boardNodes`、`boardEdges`。
 

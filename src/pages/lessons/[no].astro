@@ -4,7 +4,7 @@ import RoleSwitch from "../../components/RoleSwitch.astro";
 import Art from "../../components/Art.astro";
 import "../../styles/deck.css";
 import "../../styles/lesson.css";
-import { lessons } from "../../data/course";
+import { lessons, lessonIn } from "../../data/course";
 import { renderScene } from "../../lib/scenes.js";
 import { url } from "../../lib/url";
 
@@ -58,7 +58,16 @@ const lessonUrl = (n: number) => url(`/lessons/${n}/`);
         <span class="hint-small">字太小時，把手機橫放或按全螢幕</span>
         <button type="button" class="btn btn-quiet full" data-deck-full>全螢幕</button>
       </div>
-      <p class="video-note">這一堂的影片還在錄製，目前先看簡報。簡報裡的介面畫面是手繪的示意圖，不是實際截圖。</p>
+      <p class="video-note">
+        {
+          lessonIn[lesson.no] === "online"
+            ? "這一堂的功能在線上課會示範。"
+            : lessonIn[lesson.no] === "inperson"
+              ? "這一堂在實體課會用 ZotMax 實際做一次。"
+              : "這一堂是課後參考，上課不會教，需要時看簡報就好。"
+        }
+        這門課不錄影片。簡報裡的介面畫面是手繪的示意圖，不是實際截圖。
+      </p>
     </section>
 
     <div class="wrap below">

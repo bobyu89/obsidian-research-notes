@@ -25,55 +25,70 @@ export const modules = data.modules as { id: string; name: string; label: string
 
 export const lessonsOf = (moduleId: string) => lessons.filter((l) => l.module === moduleId);
 
-/** 四個階段。時間分配來自已定案的課程設計。 */
+/**
+ * 上課方式：一堂線上課、一堂實體課，17 堂簡報當課後參考。
+ * 2026 年 11 月由原本的「直播、預錄、工作坊、延伸」四階段改成這樣：不錄影片，課在現場上。
+ * 線上課講簡介、示範功能；實體課用 ZotMax 把 Zotero 文獻帶進 Obsidian，練習怎麼跟 AI 協作。
+ */
 export const stages = [
   {
-    id: "live",
-    name: "線上直播",
+    id: "online",
+    name: "線上課",
+    length: "60 分鐘",
+    job: "知道它能做什麼",
+    summary: "Obsidian 是什麼、跟 Word 和 Notion 差在哪，再看一次完整示範：連結、欄位、範本、Bases 表格、從筆記寫出一段文字。看懂就好，不用跟著做。",
+  },
+  {
+    id: "inperson",
+    name: "實體課",
     length: "90 分鐘",
-    job: "想學",
-    summary: "聽講者的故事，先看終點長什麼樣子，全員一起安裝、寫下第一則筆記。",
+    job: "會跟 AI 一起讀文獻",
+    summary: "用 ZotMax 把 Zotero 裡的文獻同步進 Obsidian，請 AI 寫研讀筆記，再一句一句對回原文。AI 寫初稿，你負責核對和判斷。",
   },
   {
-    id: "core",
-    name: "預錄核心",
-    length: "第 0–12 堂",
-    job: "會用",
-    summary: "每堂 10 到 15 分鐘，一次學一個動作。影片共用，練習分研究生與老師兩張卡。",
-  },
-  {
-    id: "workshop",
-    name: "實體工作坊",
-    length: "3 小時",
-    job: "用在自己身上",
-    summary: "不重講功能。帶自己的文獻來，做出自己的成品，師生互看。",
-  },
-  {
-    id: "extend",
-    name: "預錄延伸",
-    length: "第 13–16 堂",
-    job: "輸出與 AI",
-    summary: "把筆記組成文字，讓 AI 讀你的筆記，最後談隱私與查核。",
+    id: "after",
+    name: "課後參考",
+    length: "17 堂簡報",
+    job: "想再多學一點",
+    summary: "上課示範過的功能，每一個都有一堂簡報可以慢慢看，需要的時候再看，不用全部看完。",
   },
 ] as const;
 
+/** 每一堂在哪裡教。沒有列的是課後參考。 */
+export const lessonIn: Record<number, "online" | "inperson"> = {
+  0: "online",
+  1: "online",
+  4: "online",
+  6: "online",
+  8: "online",
+  9: "online",
+  11: "online",
+  14: "online",
+  15: "inperson",
+  16: "inperson",
+};
+export const whereLabel = { online: "線上課", inperson: "實體課", after: "課後參考" } as const;
+
+/** 線上課 60 分鐘：簡介，加上功能示範。講師操作，學員看。 */
 export const liveFlow: [string, number][] = [
-  ["講者的故事：筆記怎麼亂、後來怎麼解決", 10],
-  ["終點先看：「研究生的一週」與「老師的一週」", 15],
-  ["全員一起安裝、建立 vault、寫下第一則筆記", 20],
-  ["匿名投票：身分，以及最想解決的筆記問題", 10],
-  ["問答", 25],
-  ["說明預錄怎麼看、實體課要帶哪些文獻", 10],
+  ["簡介：為什麼讀過的文獻，要用的時候找不到", 5],
+  ["簡介：先看終點，一個寫論文中的研究 vault", 7],
+  ["簡介：Obsidian 是什麼，和 Word、Notion 差在哪", 8],
+  ["功能一　連結：雙中括號、反向連結、關係圖", 12],
+  ["功能二　結構：欄位、範本、Bases 表格", 15],
+  ["功能三　輸出：從筆記組出一段文字", 8],
+  ["收尾：實體課要裝什麼、帶什麼", 5],
 ];
 
+/** 實體課 90 分鐘：用 ZotMax 跟 AI 協作。 */
 export const workshopFlow: [string, number][] = [
-  ["開場：每人一句話說自己的筆記困境", 15],
-  ["排障站：依身分分桌，處理預錄卡關的問題", 20],
-  ["ZotMax 一篇驗證：全員同步成功一篇文獻", 35],
-  ["做自己的成品：研究生做文獻矩陣，老師做指導追蹤看板", 45],
-  ["交叉分享：師生互看成果", 20],
-  ["分桌深化：主題來自直播投票結果", 35],
-  ["收尾：下一步", 10],
+  ["分工原則：整理交給工具，找與寫留給你", 5],
+  ["裝 ZotMax，跑設定精靈（研究生引導、選 vault、AI 選網頁版）", 15],
+  ["把三篇文獻放進 Zotero，同步到 Obsidian，看首頁和每篇重點", 15],
+  ["跟 AI 協作一：複製提示詞給 ChatGPT、Claude 或 Gemini，把研讀筆記貼回來", 20],
+  ["跟 AI 協作二：查核，可引用句、一個數字、一個結論對回原文", 15],
+  ["跟 AI 協作三：三篇排成表，請 AI 比較，你決定哪一句能用", 10],
+  ["收尾：哪些東西不給 AI、費用、學校規定", 10],
 ];
 
 /** 每堂預錄固定的五段。 */
@@ -81,23 +96,23 @@ export const lessonShape = [
   ["學員會問的「為什麼」", "先回答你心裡的疑問，再開始教。"],
   ["臨床比喻", "用護理人員都熟的情境，說明這個功能在做什麼。"],
   ["示範一個動作", "一堂只學一個動作，新術語不超過兩個。"],
-  ["換你做", "按暫停練習。研究生做 A 卡，老師做 B 卡。"],
+  ["換你做", "自己練習。研究生做 A 卡，老師做 B 卡。"],
   ["想更懂", "功能背後的道理，最後留一個問題給你。"],
 ] as const;
 
-/** 兩種身分。內容取自第 0 堂的對照卡與工作坊的成品安排。 */
+/** 兩種身分。情境取自第 0 堂的對照卡，成品是實體課做出來的東西。 */
 export const roles: Record<Role, { name: string; scene: string[]; makes: string; makesNote: string }> = {
   a: {
     name: "研究生",
     scene: ["期末報告前一晚，想引用一篇讀過的文獻", "記得結論，卻想不起作者和年份", "只好重新搜尋、重新讀一次"],
     makes: "文獻矩陣",
-    makesNote: "每篇文獻一列，研究設計、樣本數、閱讀狀態各一欄，還能切成看板。",
+    makesNote: "每篇文獻一列，研究設計、樣本數、證據等級各一欄。實體課由 ZotMax 和 AI 先填，你逐格對回原文再留下。",
   },
   b: {
     name: "老師",
     scene: ["meeting 前五分鐘，學生已經在門口", "想不起上次建議他改哪一段", "只好請學生自己先報告一次"],
-    makes: "指導追蹤看板",
-    makesNote: "每位學生一張卡，從選題到學位口試分欄，點進去就是歷次 meeting 紀錄。",
+    makes: "AI 筆記查核表",
+    makesNote: "跟學生做同一件事：讓 AI 讀一篇文獻，一句一句對回原文，記下哪裡對、哪裡錯。之後看學生交來的 AI 輔助內容，就知道從哪裡查起。指導追蹤表的做法在第 11、12 堂簡報。",
   },
 };
 
@@ -186,9 +201,9 @@ const lessonNodes: BoardNode[] = modules.flatMap((m) =>
 );
 
 export const boardNodes: BoardNode[] = [
-  { id: "live", kind: "event", title: "線上直播", sub: "90 分鐘，全員一起安裝", x: 60, y: 86 },
+  { id: "live", kind: "event", title: "線上課", sub: "60 分鐘，簡介與功能示範", x: 60, y: 86 },
   ...lessonNodes,
-  { id: "workshop", kind: "event", title: "實體工作坊", sub: "3 小時，做自己的成品", x: 60, y: 906 },
+  { id: "workshop", kind: "event", title: "實體課", sub: "90 分鐘，用 ZotMax 跟 AI 協作", x: 60, y: 906 },
   { id: "notebook-navigator", kind: "tool", title: "Notebook Navigator", sub: "選修外掛", x: 1660, y: 372 },
   { id: "kepano-vault", kind: "tool", title: "kepano 的 vault 範本", sub: "選修：看別人怎麼排", x: 1660, y: 636 },
   { id: "obsidian-skills", kind: "tool", title: "Obsidian Skills", sub: "選修：給 AI 的技能包", x: 1660, y: 916 },
@@ -212,7 +227,7 @@ const order = ["live", ...lessons.slice(0, 13).map((l) => `l${l.no}`), "workshop
 const labelled: Record<string, [string, number]> = {
   "l3>l4": ["「哪個詞值得有自己的筆記」是這堂練習的起點", 0.3],
   "l7>l8": ["用標籤記的狀態，改成欄位", 0.76],
-  "l12>workshop": ["帶三到五篇文獻來", 0.5],
+  "l12>workshop": ["Zotero 裡放三篇有 PDF 的文獻", 0.5],
 };
 for (let i = 0; i < order.length - 1; i++) {
   const key = `${order[i]}>${order[i + 1]}`;
