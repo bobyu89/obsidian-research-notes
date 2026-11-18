@@ -242,26 +242,26 @@ const ListTag = embed ? "div" : "main";
     }
 
     <section data-panel="live" hidden>
-      <h2>線上直播</h2>
-      <p class="why">階段一　{obsidianCourse.liveDate || "日期即將公布"}</p>
+      <h2>線上課</h2>
+      <p class="why">60 分鐘　{obsidianCourse.liveDate || "日期即將公布"}</p>
       <ol class="flow">
         {liveFlow.map(([what, min]) => <li><span>{what}</span><span>{min} 分</span></li>)}
       </ol>
       {
         obsidianCourse.meetUrl ? (
-          <a class="btn btn-primary" href={obsidianCourse.meetUrl} target="_blank" rel="noopener">加入 Google Meet 直播</a>
+          <a class="btn btn-primary" href={obsidianCourse.meetUrl} target="_blank" rel="noopener">加入 Google Meet 線上課</a>
         ) : (
           <p class="pending">Google Meet 連結即將公布。</p>
         )
       }
     </section>
     <section data-panel="workshop" hidden>
-      <h2>實體工作坊</h2>
-      <p class="why">階段三　{obsidianCourse.workshopDate || "日期即將公布"}</p>
+      <h2>實體課</h2>
+      <p class="why">90 分鐘　{obsidianCourse.workshopDate || "日期即將公布"}</p>
       <ol class="flow">
         {workshopFlow.map(([what, min]) => <li><span>{what}</span><span>{min} 分</span></li>)}
       </ol>
-      <p class="pending">請先看完第 0 到 12 堂，並帶三到五篇自己的文獻。</p>
+      <p class="pending">請帶線上課做的 vault，加上三到五篇自己讀過的文獻。</p>
     </section>
   </aside>
 

@@ -4,7 +4,7 @@ import RoleSwitch from "../components/RoleSwitch.astro";
 import Art from "../components/Art.astro";
 import ObsidianBoard from "../components/boards/ObsidianBoard.astro";
 import { obsidianCourse } from "../data/site";
-import { lessons, modules, lessonsOf, stages, liveFlow, workshopFlow, lessonShape, roles, tools } from "../data/course";
+import { lessons, modules, lessonsOf, stages, liveFlow, workshopFlow, lessonShape, roles, tools, lessonIn, whereLabel } from "../data/course";
 import { url } from "../lib/url";
 
 const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
@@ -13,7 +13,7 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
 <Base
   title="Obsidian 研究筆記課"
   current="course"
-  description="給護理領域研究生與老師的 Obsidian 課：17 堂預錄、一場直播、一場實體工作坊。"
+  description="給護理領域研究生與老師的 Obsidian 課：一堂 60 分鐘的線上課、一堂 90 分鐘的實體課，17 堂簡報當課後參考。"
 >
   <main>
     <section class="top">
@@ -22,12 +22,12 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
         <h1>Obsidian <span class="nb">研究筆記課</span></h1>
         <p class="hook"><span class="hi">「我明明讀過，為什麼找不到？」</span></p>
         <p class="lede">
-          找不到，通常不是記性不好，是筆記沒有一個固定的家。這門課用 {lessons.length} 堂短課，帶護理領域的研究生與老師把筆記搬進
-          Obsidian，讓它們互相連結，需要的時候找得到、用得上。
+          找不到，通常不是記性不好，是筆記沒有一個固定的家。這門課用一堂線上課和一堂實體課，帶護理領域的研究生與老師把筆記搬進
+          Obsidian，讓它們互相連結，最後從筆記寫出一段文字。
         </p>
         <div class="actions">
-          <a class="btn btn-primary" href="#board">看學習白板</a>
-          <a class="btn btn-quiet" href="#lessons">看課程目錄</a>
+          <a class="btn btn-primary" href="#events">看兩堂課怎麼上</a>
+          <a class="btn btn-quiet" href={url("/prep/")}>課前準備</a>
         </div>
       </div>
     </section>
@@ -67,8 +67,8 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
     <section class="section path" id="stages">
       <div class="wrap">
         <Art name="rocket" size={100} rotate={10} class="pinned" />
-        <h2>四個階段，三種上課方式</h2>
-        <p class="lede">三種方式內容不重疊：直播不教操作細節，工作坊不重講功能。</p>
+        <h2>兩堂課，加上課後參考</h2>
+        <p class="lede">不錄影片，課在現場上。線上課做到會連結，實體課接著做到會整理、寫得出來，兩堂內容不重疊。</p>
         <ol class="stage-list">
           {
             stages.map((s) => (
@@ -89,9 +89,9 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
     <section class="section lessons" id="lessons">
       <div class="wrap">
         <Art name="notebook" size={100} rotate={-6} class="pinned" />
-        <h2>課程目錄</h2>
+        <h2>17 堂簡報</h2>
         <p class="lede">
-          學完的課會在這裡打勾。<span data-progress-text></span>
+          每一堂標了在哪裡教。標「課後參考」的，上課不會教，需要時自己看簡報。學完的會在這裡打勾。<span data-progress-text></span>
         </p>
         {
           modules.map((m) => (
@@ -104,7 +104,10 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
                   <li data-lesson={l.no}>
                     <a href={url(`/lessons/${l.no}/`)}>
                       <span class="no">{l.no}</span>
-                      <span class="title">{l.title}</span>
+                      <span class="title">
+                        {l.title}
+                        <small class:list={["where", lessonIn[l.no] ?? "after"]}>{whereLabel[lessonIn[l.no] ?? "after"]}</small>
+                      </span>
                       <span class="why">{l.why}</span>
                       <span class="state" aria-hidden="true">
                         <svg width="20" height="20" viewBox="0 0 20 20">
@@ -180,10 +183,10 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
     <section class="section events kraft" id="events">
       <div class="wrap">
         <Art name="coffee-to-go" size={100} rotate={6} class="pinned" />
-        <h2>直播與工作坊</h2>
+        <h2>線上課與實體課</h2>
         <div class="event-grid">
           <article id="live">
-            <h3>線上直播　{total(liveFlow)} 分鐘</h3>
+            <h3>線上課　{total(liveFlow)} 分鐘</h3>
             <p class="when">
               {obsidianCourse.liveDate || "日期即將公布"}
             </p>
@@ -200,15 +203,16 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
             {
               obsidianCourse.meetUrl ? (
                 <a class="btn btn-primary" href={obsidianCourse.meetUrl} target="_blank" rel="noopener">
-                  加入 Google Meet 直播
+                  加入 Google Meet 線上課
                 </a>
               ) : (
                 <p class="pending">Google Meet 連結即將公布，公布後會出現在這裡。</p>
               )
             }
+            <p class="pending">課前請先裝好 Obsidian，並想好一篇你讀過的文獻。<a href={url("/prep/")}>課前準備</a></p>
           </article>
           <article id="workshop">
-            <h3>實體工作坊　3 小時</h3>
+            <h3>實體課　{total(workshopFlow)} 分鐘</h3>
             <p class="when">
               {obsidianCourse.workshopDate || "日期即將公布"}
               {obsidianCourse.workshopPlace && `　${obsidianCourse.workshopPlace}`}
@@ -223,7 +227,7 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
                 ))
               }
             </ol>
-            <p class="pending">請先看完第 0 到 12 堂，並帶三到五篇自己的文獻。</p>
+            <p class="pending">請帶線上課做的 vault，加上三到五篇自己讀過的文獻。沒來線上課的人，下載<a href={url("/prep/#starter")}>起點 vault</a>就能跟上。</p>
           </article>
         </div>
         <p class="pending tba">報名方式與講者介紹即將公布。</p>
@@ -233,10 +237,10 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
     <section class="section close">
       <div class="wrap">
         <Art name="thumbs-up" size={100} rotate={8} class="pinned" />
-        <h2 data-close-title>從第 0 堂開始，只要五分鐘</h2>
-        <p class="lede" data-close-note>第 0 堂不用打開任何軟體，只請你想一件事：你的筆記，現在都放在哪裡？</p>
+        <h2>上課前，只要做好一件事</h2>
+        <p class="lede">裝好 Obsidian，打開一次，再想好一篇你讀過的文獻。其他的，我們線上課一起做。</p>
         <div class="actions">
-          <a class="btn btn-primary" href={url("/lessons/0/")} data-close-link>開始第 0 堂</a>
+          <a class="btn btn-primary" href={url("/prep/")}>看課前準備</a>
           <a class="btn btn-quiet" href="#board">回到學習白板</a>
         </div>
       </div>
@@ -249,10 +253,9 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
   window.__lessonBase = base;
 </script>
 <script>
-  import { getDone, nextLesson } from "../scripts/progress";
+  import { getDone } from "../scripts/progress";
 
   const titles = (window as any).__lessonTitles as string[];
-  const base = (window as any).__lessonBase as string;
 
   function paint() {
     const done = getDone();
@@ -264,23 +267,6 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
     });
     const text = document.querySelector("[data-progress-text]");
     if (text) text.textContent = done.size ? `你已經學完 ${done.size} 堂，共 ${titles.length} 堂。` : "";
-
-    const next = nextLesson(titles.length, done);
-    const title = document.querySelector("[data-close-title]");
-    const note = document.querySelector("[data-close-note]");
-    const link = document.querySelector<HTMLAnchorElement>("[data-close-link]");
-    if (!title || !note || !link) return;
-    if (next === null) {
-      title.textContent = "17 堂都學完了";
-      note.textContent = "回白板看看整張圖，或挑一堂再看一次。";
-      link.textContent = "回到第 0 堂";
-      link.href = `${base}0/`;
-    } else if (done.size > 0) {
-      title.textContent = `接著學第 ${next} 堂`;
-      note.textContent = titles[next];
-      link.textContent = `開始第 ${next} 堂`;
-      link.href = `${base}${next}/`;
-    }
   }
   paint();
   document.addEventListener("lb:progress", paint);
@@ -445,6 +431,30 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
   .module .why {
     color: var(--muted);
     font-size: 0.9375rem;
+  }
+  .module .where {
+    display: inline-block;
+    margin-left: 0.5rem;
+    padding: 0 0.45rem;
+    border-radius: 4px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    vertical-align: 0.1em;
+    white-space: nowrap;
+  }
+  .module .where.online {
+    background: var(--violet-soft);
+    color: var(--blue-deep);
+  }
+  .module .where.inperson {
+    background: var(--sticky);
+    color: var(--ink);
+  }
+  .module .where.after {
+    background: none;
+    color: var(--muted);
+    font-weight: 400;
+    border: 1px dashed var(--pencil);
   }
   .module .state {
     align-self: center;

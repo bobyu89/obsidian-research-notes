@@ -1,0 +1,173 @@
+---
+import Base from "../../layouts/Base.astro";
+import Art from "../../components/Art.astro";
+import { obsidianCourse } from "../../data/site";
+import { url } from "../../lib/url";
+---
+
+<Base title="課前準備" current="course" description="Obsidian 研究筆記課的課前準備：裝好 Obsidian、想好一篇讀過的文獻；沒來線上課的人可以下載起點 vault。">
+  <main>
+    <section class="top">
+      <div class="wrap">
+        <h1>課前準備</h1>
+        <p class="lede">線上課只有 60 分鐘，不處理安裝。下面這幾件事請在上課前做完，大約十分鐘。</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <Art name="laptop-open" size={100} rotate={7} class="pinned" />
+        <h2>線上課之前</h2>
+        <p class="when">{obsidianCourse.liveDate || "日期即將公布"}</p>
+        <ol class="steps">
+          <li>
+            <b>到官網下載 Obsidian</b>
+            <span>
+              <a href="https://obsidian.md/download" target="_blank" rel="noopener">obsidian.md/download</a>，選你的電腦（Windows 或 Mac）。免費，不用註冊帳號。
+            </span>
+          </li>
+          <li>
+            <b>安裝，打開一次</b>
+            <span>看到「建立新的儲存庫」那個畫面就可以關掉。vault 我們上課一起建。</span>
+          </li>
+          <li>
+            <b>確認是最新版</b>
+            <span>已經裝過的人，打開設定裡的「關於」，有更新就更新。實體課會用到 Bases，舊版沒有這個功能。</span>
+          </li>
+          <li>
+            <b>想好一篇你讀過的文獻</b>
+            <span>不用帶檔案，只要記得它在研究什麼、用了什麼量表或工具。上課寫第一則筆記會用到。</span>
+          </li>
+          <li>
+            <b>帶一台筆電</b>
+            <span>線上課要邊看邊做。一個螢幕的話，把 Meet 和 Obsidian 左右並排。</span>
+          </li>
+        </ol>
+        <p class="notice">裝不起來也沒關係，人來就好。上課時先看示範的畫面，課後再補做。</p>
+      </div>
+    </section>
+
+    <section class="section kraft">
+      <div class="wrap">
+        <h2>實體課之前</h2>
+        <p class="when">
+          {obsidianCourse.workshopDate || "日期即將公布"}
+          {obsidianCourse.workshopPlace && `　${obsidianCourse.workshopPlace}`}
+        </p>
+        <ol class="steps">
+          <li>
+            <b>帶線上課做的 vault</b>
+            <span>就是你電腦裡那個資料夾。裡面的三則筆記，實體課會接著用。</span>
+          </li>
+          <li>
+            <b>再準備三到五篇自己讀過的文獻</b>
+            <span>PDF 或紙本都可以，實體課要把它們排成一張表。老師可以改成三到五位指導的學生。</span>
+          </li>
+          <li>
+            <b>更新 Obsidian</b>
+            <span>Bases 需要較新的版本，出門前再更新一次。</span>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="starter">
+      <div class="wrap">
+        <Art name="notebook" size={96} rotate={-6} class="pinned" />
+        <h2>沒來線上課？下載起點 vault</h2>
+        <p class="lede">
+          裡面已經有三則互相連結的筆記，就是線上課結束時大家會有的樣子。下載、解壓縮，在 Obsidian 選「開啟資料夾作為儲存庫」指向它，就能直接跟上實體課。
+        </p>
+        <p>筆記裡的文獻和量表都是虛構的示範內容，之後換成你自己的就好。</p>
+        <div class="actions">
+          <a class="btn btn-primary" href={url("/files/starter-vault.zip")} download="Obsidian研究筆記課_起點vault.zip">下載起點 vault（zip）</a>
+          <a class="btn btn-quiet" href={url("/")}>回課程首頁</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <h2>不要放進 vault 的東西</h2>
+        <ul class="plain">
+          <li>病人的任何資料，包括去掉名字的病歷與護理紀錄</li>
+          <li>醫院或實習單位的內部文件</li>
+          <li>別人還沒發表的稿子</li>
+        </ul>
+        <p class="notice">vault 存在你自己的電腦裡，但之後如果開啟同步或交給 AI 讀，就不只在你電腦裡了。能不能放，以醫院、學校與系所的規定為準。</p>
+      </div>
+    </section>
+  </main>
+</Base>
+
+<style>
+  .top {
+    padding-block: clamp(2.5rem, 7vw, 5rem) clamp(1rem, 3vw, 2rem);
+  }
+  .lede {
+    max-width: var(--measure);
+  }
+  .when {
+    margin-bottom: 1rem;
+    color: var(--red);
+    font-weight: 700;
+  }
+  .steps {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 2px solid var(--ink);
+    counter-reset: step;
+  }
+  .steps li {
+    display: grid;
+    grid-template-columns: 2.6rem minmax(0, 1fr) minmax(0, 1.6fr);
+    gap: 0.4rem 1.2rem;
+    padding: 1rem 0;
+    border-bottom: 1.5px solid var(--rule);
+    counter-increment: step;
+  }
+  .steps li::before {
+    content: counter(step);
+    color: var(--blue);
+    font-size: 1.7rem;
+    line-height: 1.1;
+  }
+  .steps b {
+    font-size: 1.15rem;
+  }
+  .steps span {
+    color: var(--muted);
+  }
+  .steps a,
+  .notice a {
+    color: inherit;
+    text-underline-offset: 0.2em;
+  }
+  .notice {
+    max-width: var(--measure);
+    margin-top: 1.25rem;
+    font-weight: 700;
+  }
+  .plain {
+    margin: 0;
+    padding-left: 1.2rem;
+  }
+  .plain li {
+    margin: 0.3rem 0;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: 1.5rem;
+  }
+  @media (max-width: 40rem) {
+    .steps li {
+      grid-template-columns: 2.2rem minmax(0, 1fr);
+    }
+    .steps span {
+      grid-column: 2;
+    }
+  }
+</style>
