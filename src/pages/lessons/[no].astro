@@ -61,9 +61,9 @@ const lessonUrl = (n: number) => url(`/lessons/${n}/`);
       <p class="video-note">
         {
           lessonIn[lesson.no] === "online"
-            ? "這一堂在線上課會一起做。"
+            ? "這一堂的功能在線上課會示範。"
             : lessonIn[lesson.no] === "inperson"
-              ? "這一堂在實體課會一起做。"
+              ? "這一堂在實體課會用 ZotMax 實際做一次。"
               : "這一堂是課後參考，上課不會教，需要時看簡報就好。"
         }
         這門課不錄影片。簡報裡的介面畫面是手繪的示意圖，不是實際截圖。

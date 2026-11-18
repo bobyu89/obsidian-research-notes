@@ -5,12 +5,12 @@ import { obsidianCourse } from "../../data/site";
 import { url } from "../../lib/url";
 ---
 
-<Base title="課前準備" current="course" description="Obsidian 研究筆記課的課前準備：裝好 Obsidian、想好一篇讀過的文獻；沒來線上課的人可以下載起點 vault。">
+<Base title="課前準備" current="course" description="Obsidian 研究筆記課的課前準備：線上課人來就好；實體課請先裝好 Zotero 10、Obsidian 和 ZotMax，放三篇有 PDF 的文獻。">
   <main>
     <section class="top">
       <div class="wrap">
         <h1>課前準備</h1>
-        <p class="lede">線上課只有 60 分鐘，不處理安裝。下面這幾件事請在上課前做完，大約十分鐘。</p>
+        <p class="lede">線上課人來就好。實體課要裝 Zotero、Obsidian 和 ZotMax，請在家先做完。</p>
       </div>
     </section>
 
@@ -19,64 +19,77 @@ import { url } from "../../lib/url";
         <Art name="laptop-open" size={100} rotate={7} class="pinned" />
         <h2>線上課之前</h2>
         <p class="when">{obsidianCourse.liveDate || "日期即將公布"}</p>
+        <p>線上課是示範課：講師操作，你看懂就好，不用跟著做。人來就好，下面兩件是選做。</p>
         <ol class="steps">
           <li>
-            <b>到官網下載 Obsidian</b>
+            <b>想邊看邊試，先裝 Obsidian</b>
             <span>
-              <a href="https://obsidian.md/download" target="_blank" rel="noopener">obsidian.md/download</a>，選你的電腦（Windows 或 Mac）。免費，不用註冊帳號。
+              <a href="https://obsidian.md/download" target="_blank" rel="noopener">obsidian.md/download</a>，選你的電腦（Windows 或 Mac）。免費，不用註冊帳號。建議 1.14 以上，實體課的彩色劃線和 Bases 看板會用到。
             </span>
           </li>
           <li>
-            <b>安裝，打開一次</b>
-            <span>看到「建立新的儲存庫」那個畫面就可以關掉。vault 我們上課一起建。</span>
-          </li>
-          <li>
-            <b>確認是最新版</b>
-            <span>已經裝過的人，打開設定裡的「關於」，有更新就更新。實體課會用到 Bases，舊版沒有這個功能。</span>
-          </li>
-          <li>
-            <b>想好一篇你讀過的文獻</b>
-            <span>不用帶檔案，只要記得它在研究什麼、用了什麼量表或工具。上課寫第一則筆記會用到。</span>
-          </li>
-          <li>
-            <b>帶一台筆電</b>
-            <span>線上課要邊看邊做。一個螢幕的話，把 Meet 和 Obsidian 左右並排。</span>
+            <b>下載起點 vault</b>
+            <span>線上課示範用的就是它。在 Obsidian 選「開啟資料夾作為儲存庫」指向解壓縮後的資料夾，就能跟著點點看。<a href="#starter">下載</a></span>
           </li>
         </ol>
-        <p class="notice">裝不起來也沒關係，人來就好。上課時先看示範的畫面，課後再補做。</p>
       </div>
     </section>
 
-    <section class="section kraft">
+    <section class="section kraft" id="inperson">
       <div class="wrap">
         <h2>實體課之前</h2>
         <p class="when">
           {obsidianCourse.workshopDate || "日期即將公布"}
           {obsidianCourse.workshopPlace && `　${obsidianCourse.workshopPlace}`}
         </p>
+        <p>實體課要用 ZotMax 把 Zotero 的文獻帶進 Obsidian，再跟 AI 一起讀。要裝的東西比較多，請在家先做完，大約二十分鐘。</p>
         <ol class="steps">
           <li>
-            <b>帶線上課做的 vault</b>
-            <span>就是你電腦裡那個資料夾。裡面的三則筆記，實體課會接著用。</span>
+            <b>裝 Zotero 10</b>
+            <span>
+              <a href="https://www.zotero.org/download/" target="_blank" rel="noopener">zotero.org/download</a>。已經在用 Zotero 的人，確認是 10 版。
+            </span>
           </li>
           <li>
-            <b>再準備三到五篇自己讀過的文獻</b>
-            <span>PDF 或紙本都可以，實體課要把它們排成一張表。老師可以改成三到五位指導的學生。</span>
+            <b>裝 Obsidian，建立一個空的 vault</b>
+            <span>建議 1.14 以上。vault 取名「研究筆記」，放在你找得到的地方，例如「文件」裡。</span>
           </li>
           <li>
-            <b>更新 Obsidian</b>
-            <span>Bases 需要較新的版本，出門前再更新一次。</span>
+            <b>下載 ZotMax，先不用設定</b>
+            <span>
+              到 <a href="https://github.com/bobyu89/ZotMax/releases/latest" target="_blank" rel="noopener">ZotMax 最新版</a>下載 <code>.xpi</code> 檔（用 Firefox 請按右鍵「另存連結」）。安裝和設定精靈上課一起跑，想先試的照<a href="https://bobyu89.github.io/ZotMax/" target="_blank" rel="noopener">安裝精靈</a>做。
+            </span>
+          </li>
+          <li>
+            <b>Zotero 裡放三篇有 PDF 的文獻</b>
+            <span>用自己正在讀的最好。還沒有的，用下面三篇開放取用的示範文獻。</span>
+          </li>
+          <li>
+            <b>登入一個 AI</b>
+            <span>ChatGPT、Claude、Gemini 或學校提供的都可以，免費版就行。上課用複製貼上，不需要 API key，也不會另外花錢。</span>
+          </li>
+          <li>
+            <b>帶筆電和充電器</b>
+            <span>Zotero、Obsidian、瀏覽器會同時開著。</span>
           </li>
         </ol>
+        <h3>沒有自己的文獻？用這三篇</h3>
+        <p>都是開放取用的跌倒預防文獻。在 Zotero 按上方的魔術棒（Add Item by Identifier），貼上 DOI，按 Enter；Zotero 找得到 PDF 會自動下載，找不到就從 DOI 連結進去下載，拖到那筆文獻上。</p>
+        <ul class="papers">
+          <li><code>10.1001/jamanetworkopen.2021.38911</code><span>Montero-Odasso 等（2021），跌倒預防臨床指引的系統性回顧，JAMA Network Open</span></li>
+          <li><code>10.1136/bmjoq-2024-003006</code><span>Spoon 等（2024），醫院跌倒預防措施的導入策略，BMJ Open Quality</span></li>
+          <li><code>10.1186/s12877-024-04882-w</code><span>Xiong 等（2024），長者害怕跌倒的盛行率與危險因子，BMC Geriatrics</span></li>
+        </ul>
+        <p class="notice">裝不起來也沒關係，人來就好，上課時先跟旁邊的人一起看一台，課後再補裝。</p>
       </div>
     </section>
 
     <section class="section" id="starter">
       <div class="wrap">
         <Art name="notebook" size={96} rotate={-6} class="pinned" />
-        <h2>沒來線上課？下載起點 vault</h2>
+        <h2>起點 vault</h2>
         <p class="lede">
-          裡面已經有三則互相連結的筆記，就是線上課結束時大家會有的樣子。下載、解壓縮，在 Obsidian 選「開啟資料夾作為儲存庫」指向它，就能直接跟上實體課。
+          線上課示範用的 vault，裡面有幾則互相連結的筆記。下載、解壓縮，在 Obsidian 選「開啟資料夾作為儲存庫」指向它，就能照著線上課的示範點點看。
         </p>
         <p>筆記裡的文獻和量表都是虛構的示範內容，之後換成你自己的就好。</p>
         <div class="actions">
@@ -93,14 +106,33 @@ import { url } from "../../lib/url";
           <li>病人的任何資料，包括去掉名字的病歷與護理紀錄</li>
           <li>醫院或實習單位的內部文件</li>
           <li>別人還沒發表的稿子</li>
+          <li>上面這些，也不要貼給 AI</li>
         </ul>
-        <p class="notice">vault 存在你自己的電腦裡，但之後如果開啟同步或交給 AI 讀，就不只在你電腦裡了。能不能放，以醫院、學校與系所的規定為準。</p>
+        <p class="notice">vault 存在你自己的電腦裡，但開啟同步、或把內容貼給 AI 讀，就不只在你電腦裡了。能不能放，以醫院、學校與系所的規定為準。</p>
       </div>
     </section>
   </main>
 </Base>
 
 <style>
+  h3 {
+    margin-top: 2rem;
+  }
+  .papers {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .papers li {
+    display: grid;
+    gap: 0.2rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px dashed var(--ink);
+  }
+  .papers code {
+    font-weight: 700;
+    overflow-wrap: anywhere;
+  }
   .top {
     padding-block: clamp(2.5rem, 7vw, 5rem) clamp(1rem, 3vw, 2rem);
   }

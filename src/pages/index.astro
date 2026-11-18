@@ -209,7 +209,7 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
                 <p class="pending">Google Meet 連結即將公布，公布後會出現在這裡。</p>
               )
             }
-            <p class="pending">課前請先裝好 Obsidian，並想好一篇你讀過的文獻。<a href={url("/prep/")}>課前準備</a></p>
+            <p class="pending">這堂是示範課，看懂就好，不用跟著做。想邊看邊試，先裝好 Obsidian。<a href={url("/prep/")}>課前準備</a></p>
           </article>
           <article id="workshop">
             <h3>實體課　{total(workshopFlow)} 分鐘</h3>
@@ -227,7 +227,7 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
                 ))
               }
             </ol>
-            <p class="pending">請帶線上課做的 vault，加上三到五篇自己讀過的文獻。沒來線上課的人，下載<a href={url("/prep/#starter")}>起點 vault</a>就能跟上。</p>
+            <p class="pending">請在課前裝好 Zotero 10、Obsidian 和 ZotMax，Zotero 裡放三篇有 PDF 的文獻，再登入一個 AI（ChatGPT、Claude、Gemini 都可以，免費版就行）。<a href={url("/prep/#inperson")}>實體課準備</a></p>
           </article>
         </div>
         <p class="pending tba">報名方式與講者介紹即將公布。</p>
@@ -238,7 +238,7 @@ const total = (flow: [string, number][]) => flow.reduce((n, [, m]) => n + m, 0);
       <div class="wrap">
         <Art name="thumbs-up" size={100} rotate={8} class="pinned" />
         <h2>上課前，只要做好一件事</h2>
-        <p class="lede">裝好 Obsidian，打開一次，再想好一篇你讀過的文獻。其他的，我們線上課一起做。</p>
+        <p class="lede">線上課人來就好。實體課要裝的東西比較多，請照課前準備頁做完，大約二十分鐘。</p>
         <div class="actions">
           <a class="btn btn-primary" href={url("/prep/")}>看課前準備</a>
           <a class="btn btn-quiet" href="#board">回到學習白板</a>
