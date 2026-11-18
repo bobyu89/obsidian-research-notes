@@ -29,7 +29,7 @@ Astro（使用者選定），靜態輸出，部署到 GitHub Pages。學習進�
   - 實體課：用 Bob 自己開發的 ZotMax（Zotero 10 外掛，github.com/bobyu89/ZotMax）把 Zotero 文獻同步進 Obsidian，練習跟 AI 協作：AI 寫研讀筆記初稿（網頁版 AI 複製貼上，免 API key、不另外付費），學員逐句對回原文，最後跨文獻比較。新安裝用「研究生引導」模式。教第 15、16 堂。分工原則沿用 ZotMax：整理交給工具，找與寫留給人。
   - 沒有自己文獻的人，課前準備頁列了三篇開放取用的跌倒預防文獻 DOI（Montero-Odasso 2021、Spoon 2024、Xiong 2024），用 Zotero 魔術棒加入。
   - 其餘堂次是課後參考，課程目錄上每一堂標了「線上課」「實體課」「課後參考」。
-  - 課前準備頁 `/prep/`：線上課人來就好；實體課要先裝 Zotero 10、Obsidian、ZotMax。起點 vault（`public/files/starter-vault.zip`，虛構示範筆記）給線上課想跟著點的人。
+  - 課前準備頁 `/prep/`：線上課人來就好；實體課要先裝 Zotero 10、Obsidian、ZotMax。起點 vault（`public/files/starter-vault.zip`，虛構示範筆記）給線上課想跟著點的人；終點 vault（`public/files/end-vault.zip`，三篇示範文獻依 PubMed 摘要整理，含 Bases 表與段落草稿）是線上課開場展示的成品。
 - 每堂簡報固定五段：為什麼、臨床比喻、示範一個動作、換你做（A 卡給研究生、B 卡給老師）、想更懂。
 - 線上課用 Google Meet，連結之後由 Bob 提供。
 - 課程內容的唯一來源是 `data/*.js`（不在這個 repo），網站使用的是去掉逐字稿的版本。
